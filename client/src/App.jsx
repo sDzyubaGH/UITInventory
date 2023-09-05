@@ -1,23 +1,9 @@
-import {useEffect, useState} from "react"
+import { useEffect, useState } from "react";
+import { BrowserRouter } from "react-router-dom";
+import AppRouter from "./components/AppRouter";
 
 function App() {
-  const [response, setResponse] = useState({})
-
-  const doFetch = async () => {
-    const response = await fetch(`http://localhost:8000/api/statements`)
-    const data = await response.json()
-    setResponse(data)
-  }
-
-  useEffect(() => {
-    // const res = fetch(`http://localhost:8000/api/statements`)
-    //   .then((response) => response.json())
-    //   .then((data) => setResponse(data))
-    doFetch()
-    // console.log(res)
-  }, [])
-
-  return <div>{response?.message}</div>
+  return <AppRouter />;
 }
 
-export default App
+export default App;
