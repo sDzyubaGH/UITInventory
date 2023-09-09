@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const authAxios = axios.create({
-  baseURL: import.meta.env.APP_API_URL,
+  baseURL: import.meta.env.VITE_API_URL,
 });
 
 authAxios.interceptors.request.use(
@@ -17,9 +17,7 @@ authAxios.interceptors.request.use(
 );
 
 authAxios.interceptors.response.use(
-  (response) => {
-    return response;
-  },
+  (response) => response,
   (error) => {
     if (error.response.status === 403) {
       localStorage.removeItem("access_token");

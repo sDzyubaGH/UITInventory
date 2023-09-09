@@ -1,5 +1,5 @@
-import axios from "axios";
-import { createContext, useEffect, useState } from "react";
+// import axios from "axios";
+import { createContext, useContext, useEffect, useState } from "react";
 import React from "react";
 import authAxios from "../axios";
 
@@ -11,12 +11,12 @@ const initialState = {
 };
 const AuthContext = createContext(initialState);
 
-const AuthContextProvider = ({ children }) => {
+export const AuthContextProvider = ({ children }) => {
   const [authUser, setAuthUser] = useState(null);
   const [token, setValidToken] = useState(localStorage.getItem("access_token"));
 
   useEffect(() => {
-    authAxios.post("/auth");
+    authAxios.get("/user/auth");
   }, []);
 
   const setToken = (token) => {
@@ -26,7 +26,11 @@ const AuthContextProvider = ({ children }) => {
     else localStorage.removeItem("access_token", token);
   };
 
-  return <AuthContextProvider value={{}}>{children}</AuthContextProvider>;
+  return (
+    <AuthContext.Provider value={{ authUser, token, setAuthUser, setToken }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
-export default AuthContextProvide;
+export const useAuth = () => useContext(AuthContext);

@@ -6,6 +6,9 @@ import DeleteProduct from "./pages/DeleteProduct";
 import ErrorPage from "./pages/ErrorPage";
 import GuestLayout from "./pages/GuestLayout";
 import LoginSingup from "./pages/LoginSingup";
+import DefaultLayout from "./pages/DefaultLayout";
+import Archive from "./pages/Archive";
+import Registration from "./pages/Registration";
 
 const router = createBrowserRouter([
   {
@@ -17,23 +20,23 @@ const router = createBrowserRouter([
         element: <Navigate to="/info/home" />,
       },
       {
-        path: "/info",
+        path: "info",
         element: <Info />,
         children: [
           {
-            path: "/home",
+            path: "home",
             element: <Home />,
           },
           {
-            path: "/archive",
+            path: "archive",
             element: <Archive />,
           },
           {
-            path: "/add",
+            path: "add",
             element: <AddProduct />,
           },
           {
-            path: "/delete",
+            path: "delete",
             element: <DeleteProduct />,
           },
         ],
@@ -46,8 +49,12 @@ const router = createBrowserRouter([
     element: <GuestLayout />,
     children: [
       {
-        path: "/login",
+        path: "login",
         element: <LoginSingup />,
+      },
+      {
+        path: "reg",
+        element: <Registration />,
       },
     ],
     errorElement: <ErrorPage />,
