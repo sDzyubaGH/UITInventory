@@ -9,9 +9,9 @@ datasource db {
 
 model User {
     id Int @id @default(autoincrement())
-    name String
-    surname String 
-    position String
+    firstName String?
+    surname String? 
+    position String?
     login String
     password String
     products Statements[]
