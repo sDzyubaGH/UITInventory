@@ -8,7 +8,7 @@ function DefaultLayout() {
   if (!token) return <Navigate to="/login" />;
 
   return (
-    <div className="h-screen bg-[#0cce0cfb]">
+    <div className="h-full bg-[#0cce0cfb]">
       <Outlet />
     </div>
   );
