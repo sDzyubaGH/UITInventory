@@ -1,11 +1,14 @@
 import React from "react";
 import Navigation from "./Navigation";
 
+import PersonalAccount from "./PersonalAccount";
+
 function Header() {
   return (
-    <div className="flex bg-slate-300 w-full h-28 justify-stretch ">
+    <header className="bg-white drop-shadow-lg flex justify-between w-full">
       <Navigation />
-    </div>
+      <PersonalAccount />
+    </header>
   );
 }
 
