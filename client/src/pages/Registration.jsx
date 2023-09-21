@@ -3,7 +3,7 @@ import Logo from "../assets/logo-2.jpg";
 
 function Registration() {
   return (
-    <div className="lg:w-2/5 md:w-1/2 w-2/3">
+    <div className="">
       <form className="bg-white p-10 rounded-lg shadow-lg min-w-full">
         <div className="flex justify-center pb-1">
           <img className="h-12 w-auto sm:h-12" src={Logo} alt="LogoVos" />
