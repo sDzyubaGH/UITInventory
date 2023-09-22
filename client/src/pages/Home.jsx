@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Navigation from "../components/Navigation";
 
-const Home = () => {
+const Home = ({ data }) => {
   return (
     <div className="overflow-auto">
       <div className=" flex justify-center mt-20">
