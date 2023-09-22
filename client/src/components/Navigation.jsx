@@ -13,9 +13,9 @@ function Navigation() {
         <div className="flex ml-auto">
           <Link to="info/home">
             <h1
-              className={`px-2 mx-2 pb-4 mt-6 text-xl text-gray-500 font-semibold ${
+              className={`px-2 mx-2 pb-4 mt-6 text-xl  font-semibold text-gray-500 ${
                 window.location.pathname === "/info/home"
-                  ? "border-b-2 border-indigo-500 text-xl font-semibold text-black"
+                  ? "border-b-2 border-indigo-500 text-xl font-semibold text-black "
                   : "hover:border-b-2 border-gray-400"
               }`}
             >
