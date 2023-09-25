@@ -25,7 +25,7 @@ function Navigation() {
           </Link>
           <Link to="info/archive">
             <h1
-              className={`px-2 mx-2 pb-4 mt-6 text-xl font-semibold ${
+              className={`px-2 mx-2 pb-4 mt-6 text-xl  font-semibold ${
                 window.location.pathname === "/info/archive"
                   ? "border-b-2 border-indigo-500 text-xl font-semibold text-black "
                   : "hover:border-b-2 border-gray-400 text-gray-500"
@@ -36,7 +36,7 @@ function Navigation() {
           </Link>
           <Link to="info/add">
             <h1
-              className={`px-2 mx-2 pb-4 mt-6 text-xl font-semibold ${
+              className={`px-2 mx-2 pb-4 mt-6 text-xl  font-semibold ${
                 window.location.pathname === "/info/add"
                   ? "border-b-2 border-indigo-500 text-xl font-semibold text-black"
                   : "hover:border-b-2 border-gray-400 text-gray-500"
@@ -47,10 +47,10 @@ function Navigation() {
           </Link>
           <Link to="info/delete">
             <h1
-              className={`px-2 mx-2 pb-4 mt-6 text-xl font-semibold ${
+              className={`px-2 mx-2 pb-4 mt-6 text-xl  font-semibold ${
                 window.location.pathname === "/info/delete"
                   ? "border-b-2 border-indigo-500 text-xl font-semibold text-black"
-                  : "hover:border-b-2 border-gray-400 text-gray-500"
+                  : "hover:border-b-2 border-gray-400 text-gray-500 "
               }`}
             >
               Выписать

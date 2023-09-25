@@ -1,18 +1,26 @@
 import React, { useState } from "react";
-import Navigation from "../components/Navigation";
 
-const Home = ({ data }) => {
+import NewsItem from "../components/News/NewsItem";
+
+const Home = () => {
+  const [news, setNews] = useState([
+    { id: 1, name: "js", action: "delete", date: "13.21.21" },
+    { id: 2, name: "js", action: "delete", date: "13.21.21" },
+    { id: 3, name: "js", action: "delete", date: "13.21.21" },
+    { id: 4, name: "js", action: "delete", date: "13.21.21" },
+    { id: 5, name: "js", action: "delete", date: "13.21.21" },
+  ]);
+
   return (
-    <div className="overflow-auto">
-      <div className=" flex justify-center mt-20">
-        <div className="flex bg-gray-400 w-1/2 rounded-lg ">
-          <table class="w-full text-sm text-left text-gray-500  dark:text-gray-400">
-            <thead className="text-xl flex justify-between px-10 py-3 ">
-              <th className="text-white">Info</th>
-              <th className="text-white">Name</th>
-              <th className="text-white">Action</th>
-            </thead>
-          </table>
+    <div className="flex justify-center items-center ">
+      <div className="mt-14 w-3/6 ">
+        <h1 className="text-center font-myBeeFont text-2xl font-[600] ">
+          Последние изменения
+        </h1>
+        <div>
+          {news.map((news) => (
+            <NewsItem news={news} key={news.id} />
+          ))}
         </div>
       </div>
     </div>
