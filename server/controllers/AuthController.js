@@ -60,10 +60,11 @@ class AuthController {
     try {
     } catch (error) {}
   }
+
   async check(req, res, next) {
     try {
-      const accessTokentoken = token.generateTokens(req.user.id);
-      return res.json({ accessTokentoken });
+      const token = token.generateTokens(req.user.id);
+      return res.status(200).json({ token });
     } catch (error) {}
   }
 }
