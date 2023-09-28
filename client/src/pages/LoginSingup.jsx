@@ -7,7 +7,6 @@ import authAxios from "../axios";
 function LoginSingup() {
   const [formLoading, setFormLoading] = useState(false);
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const { setToken } = useAuth();
   const navigate = useNavigate();
@@ -71,14 +70,19 @@ function LoginSingup() {
               />
             </div>
             <div className="flex items-center justify-center mt-6 mx-auto px-6 pb-2">
-              <button className="w-full text-sm capitalize text-white rounded-lg font-semibold bg-blue-500 py-2 px-8 hover:bg-blue-400 tracking-wide">
+              <button className="w-full text-l capitalize text-white rounded-lg font-semibold bg-blue-500 py-2 px-8 hover:bg-blue-400 tracking-wide">
                 Sign In
               </button>
             </div>
           </form>
           <div className="flex items-center justify-center mx-auto px-6 ">
-            <button className=" w-full text-sm rounded-lg  capitalize text-gray-700 bg-indigo-100 py-2 px-8 hover:bg-slate-300 font-semibold tracking-wide">
-              Sign Up
+            <button
+              className=" w-full  rounded-lg  capitalize text-gray-700 bg-indigo-100 py-2 px-8 hover:bg-slate-300 font-semibold tracking-wide text-l"
+              onClick={(event) => {
+                navigate("/reg");
+              }}
+            >
+              Registration
             </button>
           </div>
         </div>
