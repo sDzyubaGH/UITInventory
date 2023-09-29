@@ -19,6 +19,7 @@ authAxios.interceptors.request.use(
 authAxios.interceptors.response.use(
   (response) => response,
   (error) => {
+    console.log(error);
     if (error === 403) {
       localStorage.removeItem("access_token");
     } else throw error;

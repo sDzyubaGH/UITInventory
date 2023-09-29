@@ -8,7 +8,7 @@ function LoginSingup() {
   const [formLoading, setFormLoading] = useState(false);
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const { setToken } = useAuth();
+  const { setToken, setUserFromToken } = useAuth();
   const navigate = useNavigate();
 
   const [login, setLogin] = useState("");
@@ -19,7 +19,10 @@ function LoginSingup() {
       setFormLoading(true); // флаг состояния загрузки формы
       const send = await authAxios.post(`/user/login`, { login, password }); // асинхронный запрос
 
-      setToken(send.data.accessToken);
+      const token = send.data.accessToken
+      setToken(token);
+      setUserFromToken(token)
+
       navigate("/info/home");
     } catch (error) {
       setError(error.send?.data?.message || error.message);

@@ -26,7 +26,10 @@ function Registration() {
         position,
       });
       setSuccess(send.data.message);
-      setInterval(() => navigate("/info/home"), 1000);
+      const iId = setInterval(() => {
+        navigate("/info/home");
+        clearInterval(iId);
+      }, 1000);
     } catch (error) {
       setError(error.response.data.message);
     } finally {

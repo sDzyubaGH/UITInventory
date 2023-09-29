@@ -4,7 +4,7 @@ import Logo from "../assets/logo-2.jpg";
 
 function Navigation() {
   const navigate = useNavigate();
-  console.log(window.location.pathname);
+
   return (
     <div className="flex justify-between py-2">
       <nav className="flex px-10 items-center justify-stretch">

@@ -2,25 +2,30 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import React from "react";
 import authAxios from "../axios";
+import jwt_decode from "jwt-decode";
 
 const initialState = {
-  authUser: null,
   token: null,
   userName: null,
   setUserName: () => {},
-  setAuthUser: () => {},
   setValidToken: () => {},
 };
-const AuthContext = createContext(initialState);
+const AuthContext = createContext(initialState); // объявление контекста
 
+//Создаем провайдер от нашего контекста
 export const AuthContextProvider = ({ children }) => {
-  const [authUser, setAuthUser] = useState(null);
   const [token, setValidToken] = useState(localStorage.getItem("access_token"));
-  const [userName, setUserName] = useState(null);
+  const [user, setUser] = useState({});
 
   useEffect(() => {
-    authAxios.get("/user/auth");
+    if (location.pathname !== "/reg" || location.pathname !== "/login")
+      authAxios.get("/user/auth");
   }, []);
+
+  const setUserFromToken = (token) => {
+    const decodedToken = jwt_decode(token)
+    setUser(decodedToken)
+  }
 
   const setToken = (token) => {
     setValidToken(token);
@@ -29,14 +34,8 @@ export const AuthContextProvider = ({ children }) => {
     else localStorage.removeItem("access_token", token);
   };
 
-  const userControll = (firstName) => {
-    setUserName(firstName);
-  };
-
   return (
-    <AuthContext.Provider
-      value={{ authUser, token, setAuthUser, setToken, userControll }}
-    >
+    <AuthContext.Provider value={{ token, setToken, user, setUserFromToken }}>
       {children}
     </AuthContext.Provider>
   );

@@ -2,7 +2,7 @@ import React from "react";
 
 function SideBar() {
   return (
-    <div className=" bg-gradient-to-r from-sky-600 to-indigo-600 h-screen w-[40%] rounded-r-md p-4  ">
+    <div className=" bg-gradient-to-r from-sky-600 to-indigo-600 h-auto w-auto rounded-r-md p-4 shadow-2xl">
       <h1 className="font-serif text-2xl text-center mt-10 text-white  ">
         Filter
       </h1>
