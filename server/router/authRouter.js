@@ -12,6 +12,8 @@ authRouter.post(
       "password",
       "Пароль не может быть пустым и меньше 4 символов"
     ).isLength({ min: 4 }),
+    check("firstName", "Это поле не может быть пустым").notEmpty(),
+    check("surname", "Это поле не может быть пустым").notEmpty(),
   ],
   authController.registration
 );
