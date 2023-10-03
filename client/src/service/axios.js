@@ -12,7 +12,7 @@ authAxios.interceptors.request.use(
     return config;
   },
   (error) => {
-    return Promise.reject(error);
+    error.message;
   }
 );
 
@@ -21,6 +21,7 @@ authAxios.interceptors.response.use(
   (error) => {
     if (error.response.status === 403) {
       localStorage.removeItem("access_token");
+      localStorage.removeItem("user")
     } else throw error;
   }
 );

@@ -4,6 +4,7 @@ import Logo from "../assets/logo-2.jpg";
 
 function Navigation() {
   const navigate = useNavigate();
+
   return (
     <div className="flex justify-between py-2">
       <nav className="flex px-10 items-center justify-stretch">
@@ -13,10 +14,10 @@ function Navigation() {
         <div className="flex ml-auto">
           <Link to="info/home">
             <h1
-              className={`px-2 mx-2 pb-4 mt-6 text-xl text-gray-500 font-semibold ${
+              className={`px-2 mx-2 pb-4 mt-6 text-xl  font-semibold ${
                 window.location.pathname === "/info/home"
-                  ? "border-b-2 border-indigo-500 text-xl font-semibold text-black"
-                  : "hover:border-b-2 border-gray-400"
+                  ? "border-b-2 border-indigo-500 text-xl font-semibold text-black "
+                  : "hover:border-b-2 border-gray-400 text-gray-500"
               }`}
             >
               Главная
@@ -24,10 +25,10 @@ function Navigation() {
           </Link>
           <Link to="info/archive">
             <h1
-              className={`px-2 mx-2 pb-4 mt-6 text-xl text-gray-500 font-semibold ${
+              className={`px-2 mx-2 pb-4 mt-6 text-xl  font-semibold ${
                 window.location.pathname === "/info/archive"
                   ? "border-b-2 border-indigo-500 text-xl font-semibold text-black "
-                  : "hover:border-b-2 border-gray-400 "
+                  : "hover:border-b-2 border-gray-400 text-gray-500"
               }`}
             >
               Архив
@@ -35,10 +36,10 @@ function Navigation() {
           </Link>
           <Link to="info/add">
             <h1
-              className={`px-2 mx-2 pb-4 mt-6 text-xl text-gray-500 font-semibold ${
+              className={`px-2 mx-2 pb-4 mt-6 text-xl  font-semibold ${
                 window.location.pathname === "/info/add"
                   ? "border-b-2 border-indigo-500 text-xl font-semibold text-black"
-                  : "hover:border-b-2 border-gray-400 "
+                  : "hover:border-b-2 border-gray-400 text-gray-500"
               }`}
             >
               Внести
@@ -46,10 +47,10 @@ function Navigation() {
           </Link>
           <Link to="info/delete">
             <h1
-              className={`px-2 mx-2 pb-4 mt-6 text-xl text-gray-500 font-semibold ${
+              className={`px-2 mx-2 pb-4 mt-6 text-xl  font-semibold ${
                 window.location.pathname === "/info/delete"
                   ? "border-b-2 border-indigo-500 text-xl font-semibold text-black"
-                  : "hover:border-b-2 border-gray-400 "
+                  : "hover:border-b-2 border-gray-400 text-gray-500 "
               }`}
             >
               Выписать

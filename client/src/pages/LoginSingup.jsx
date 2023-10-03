@@ -1,15 +1,14 @@
 import React, { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Logo from "../assets/logo-2.jpg";
-import authAxios from "../axios";
+import authAxios from "../service/axios";
 
 function LoginSingup() {
   const [formLoading, setFormLoading] = useState(false);
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
-  const { setToken } = useAuth();
+  const { setToken} = useAuth();
   const navigate = useNavigate();
 
   const [login, setLogin] = useState("");
@@ -19,8 +18,9 @@ function LoginSingup() {
     try {
       setFormLoading(true); // флаг состояния загрузки формы
       const send = await authAxios.post(`/user/login`, { login, password }); // асинхронный запрос
-
-      setToken(send.data.accessToken);
+      const token = send.data.accessToken
+      
+      setToken(token);
       navigate("/info/home");
     } catch (error) {
       setError(error.send?.data?.message || error.message);
@@ -71,14 +71,19 @@ function LoginSingup() {
               />
             </div>
             <div className="flex items-center justify-center mt-6 mx-auto px-6 pb-2">
-              <button className="w-full text-sm capitalize text-white rounded-lg font-semibold bg-blue-500 py-2 px-8 hover:bg-blue-400 tracking-wide">
+              <button className="w-full text-l capitalize text-white rounded-lg font-semibold bg-blue-500 py-2 px-8 hover:bg-blue-400 tracking-wide">
                 Sign In
               </button>
             </div>
           </form>
           <div className="flex items-center justify-center mx-auto px-6 ">
-            <button className=" w-full text-sm rounded-lg  capitalize text-gray-700 bg-indigo-100 py-2 px-8 hover:bg-slate-300 font-semibold tracking-wide">
-              Sign Up
+            <button
+              className=" w-full  rounded-lg  capitalize text-gray-700 bg-indigo-100 py-2 px-8 hover:bg-slate-300 font-semibold tracking-wide text-l"
+              onClick={(event) => {
+                navigate("/reg");
+              }}
+            >
+              Registration
             </button>
           </div>
         </div>

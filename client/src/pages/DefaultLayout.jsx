@@ -6,10 +6,10 @@ import Header from "../components/Header";
 function DefaultLayout() {
   const { token } = useAuth();
 
-  // if (!token) return <Navigate to="/login" />;
+  if (!token) return <Navigate to="/login" />;
 
   return (
-    <div className="h-full  bg-slate-300">
+    <div className="min-h-screen bg-slate-100">
       <Header />
       <div>
         <Outlet />

@@ -1,6 +1,5 @@
 import jwt from "jsonwebtoken";
 import "dotenv/config";
-import express from "express";
 
 export default function (req, res, next) {
   if (req.method === "OPTIONS") {
