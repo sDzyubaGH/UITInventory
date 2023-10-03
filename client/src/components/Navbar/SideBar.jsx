@@ -2,9 +2,9 @@ import React from "react";
 
 function SideBar() {
   return (
-    <div className=" bg-gradient-to-r from-sky-600 to-indigo-600 h-auto w-auto rounded-r-md p-4 shadow-2xl">
+    <div className=" bg-gradient-to-r from-sky-600 to-indigo-600 h-screen w-auto  p-4 shadow-2xl">
       <h1 className="font-serif text-2xl text-center mt-10 text-white  ">
-        Filter
+        Фильтры
       </h1>
       <div className="flex justify-around flex-wrap m-10 py-10 border-2  rounded-lg border-white ">
         <input className="m-2 w-1/3 rounded-md" />

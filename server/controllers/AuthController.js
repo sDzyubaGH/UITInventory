@@ -1,6 +1,5 @@
 import { prisma } from "../service/prisma.js";
-import express from "express";
-import "dotenv/config";
+import "dotenv/config.js";
 import bcryptjs, { hash } from "bcrypt";
 import { validationResult } from "express-validator";
 import { token } from "../service/token-service.js";
@@ -30,6 +29,7 @@ class AuthController {
       res.status(500).json({ message: "Ошибка Регистрации" });
     }
   }
+
   async login(req, res, next) {
     try {
       const { login, password } = req.body;
@@ -51,17 +51,8 @@ class AuthController {
 
       return res.status(200).json({ accessToken });
     } catch (error) {
-      console.log(error);
-      res.status(400).json({ message: "Login error" });
+      res.status(400).json({ message: "Ошибка логина" });
     }
-  }
-  async getUserName(req, res, next) {
-    try {
-    } catch (error) {}
-  }
-  async refresh(req, res, next) {
-    try {
-    } catch (error) {}
   }
 
   async check(req, res, next) {

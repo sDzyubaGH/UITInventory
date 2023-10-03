@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Logo from "../assets/logo-2.jpg";
-import authAxios from "../axios";
+import authAxios from "../service/axios";
 
 function LoginSingup() {
   const [formLoading, setFormLoading] = useState(false);
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const { setToken, setUserFromToken } = useAuth();
+  const { setToken} = useAuth();
   const navigate = useNavigate();
 
   const [login, setLogin] = useState("");
@@ -18,11 +18,9 @@ function LoginSingup() {
     try {
       setFormLoading(true); // флаг состояния загрузки формы
       const send = await authAxios.post(`/user/login`, { login, password }); // асинхронный запрос
-
       const token = send.data.accessToken
+      
       setToken(token);
-      setUserFromToken(token)
-
       navigate("/info/home");
     } catch (error) {
       setError(error.send?.data?.message || error.message);

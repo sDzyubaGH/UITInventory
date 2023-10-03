@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Logo from "../assets/logo-2.jpg";
 import { useNavigate } from "react-router-dom";
-import authAxios from "../axios";
+import authAxios from "../service/axios";
 
 function Registration() {
   const navigate = useNavigate();
@@ -70,14 +70,14 @@ function Registration() {
         </h1>
 
         {success ? (
-          <p className="mb-2 text-green-500 font-semibold text-center">
+          <p className="mb-2 text-green-500  text-center">
             {success}
           </p>
         ) : (
-          <p className="mb-2 text-red-500 font-semibold text-center">{error}</p>
+          <p className="mb-2 text-red-500 break-all text-center">{error}</p>
         )}
 
-        <div className="flex flex-col space-y-3 w-72 ">
+        <div className="flex flex-col space-y-3 w-80 ">
           <div>
             <input
               className="block rounded-lg border p-2 px-4 w-full focus:border-blue-400  focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300 "
