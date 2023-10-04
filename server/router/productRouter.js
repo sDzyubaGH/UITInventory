@@ -12,7 +12,15 @@ productRouter.post(
   ],
   prodController.postProduct
 ); // Добавление товара
-productRouter.get("/allProduct", prodController.getFullProduct); //Получение всех товаров на складе
-productRouter.get("/latestAction", prodController.getLatestActions); // Получение послдених изменений
-productRouter.post("/addStatements", prodController.addStatement); // Добавление информации о пользователе и товаре
+productRouter.get("/allProduct", authMiddleware, prodController.getFullProduct); //Получение всех товаров на складе
+productRouter.get(
+  "/latestAction",
+  authMiddleware,
+  prodController.getLatestActions
+); // Получение послдених изменений
+productRouter.post(
+  "/addStatements",
+  authMiddleware,
+  prodController.addStatement
+); // Добавление информации о пользователе и товаре
 export default productRouter;
