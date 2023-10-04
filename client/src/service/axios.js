@@ -19,10 +19,10 @@ authAxios.interceptors.request.use(
 authAxios.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response.status === 403) {
+    if (error.status === 403) {
       localStorage.removeItem("access_token");
-      localStorage.removeItem("user")
-    } else throw error;
+      localStorage.removeItem("user");
+    } else throw error();
   }
 );
 
