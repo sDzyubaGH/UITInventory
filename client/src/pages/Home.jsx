@@ -1,50 +1,32 @@
 import React, { useEffect, useState } from "react";
-
 import NewsItem from "../components/News/NewsItem";
 import SideBar from "../components/Navbar/SideBar";
-import ProductService from "../service/productService";
+import NewsService from "../service/FetchNewsService.js";
+
+const newsService = new NewsService() 
 
 const Home = () => {
   const [news, setNews] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [newsPerPage] = useState(10);
 
-  const scrollHandler = (e) => {
-
-  }
- 
   
-  
-
-  //Перенести в FetchService (колбэк проп)
-  async function fetchNews() {  
-    const response = await ProductService.getLatest()
-    
-    const latestActions = response.data.latestActions.map((post) => {
-
-      const productInfo = post.product
-      const userInfo = post.user
-
-      const toTransform = new Date(productInfo.add_date)
-      const formattedDate = `${toTransform.getUTCDate()}.${toTransform.getUTCMonth() + 1}.${toTransform.getUTCFullYear()}`
-
-      const latestActions = {
-        userName: userInfo.firstName + " " + userInfo.surname,
-        product: productInfo.name,
-        date: formattedDate,
-      }
-  
-      return {latestActions}
-    })
-
-    setNews(latestActions)
-  }
 
   useEffect( () => {
-    fetchNews()
-  }, []
-  )
-
-
-
+    const fetchData = async()  => {
+      setLoading(true)
+      try {
+        const latestNews = await newsService.getLatestNews()
+        setNews(latestNews)
+      } catch (error) {
+        error.log
+      }
+      setLoading(false)
+    }
+    fetchData()
+    
+  }, [])
 
   return (
     <div className="flex">
