@@ -2,16 +2,9 @@ import React from "react";
 
 function SideBar() {
   return (
-    <div className=" bg-gradient-to-r from-sky-600 to-indigo-600 h-screen w-auto  p-4 shadow-2xl">
-      <h1 className="font-serif text-2xl text-center mt-10 text-white  ">
-        Фильтры
-      </h1>
-      <div className="flex justify-around flex-wrap m-10 py-10 border-2  rounded-lg border-white ">
-        <input className="m-2 w-1/3 rounded-md" />
-        <input className="m-2 w-1/3 rounded-md" />
-        <button className="bg-green-400 mt-10 w-1/3 rounded-md"> click</button>
-        <button className="bg-green-400 mt-10 w-1/3 rounded-md"> click</button>
-      </div>
+    <div className=" bg-gradient-to-r from-sky-600 to-indigo-600  min-h-screen w-2/4  p-4 shadow-2xl">
+      <h1 className=" text-2xl text-center mt-10 text-white  ">Сортировка</h1>
+      <div className="flex flex-col w-3/5 space-y-4 pt-6 items-center"></div>
     </div>
   );
 }

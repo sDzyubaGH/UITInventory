@@ -33,7 +33,7 @@ function Registration() {
     } catch (error) {
       setError(error.response.data.message);
     } finally {
-      setFormLoading(false);
+      setFormLoading(true);
     }
   };
 

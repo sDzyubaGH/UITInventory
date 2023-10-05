@@ -9,7 +9,7 @@ function DefaultLayout() {
   if (!token) return <Navigate to="/login" />;
 
   return (
-    <div className="min-h-screen bg-slate-100">
+    <div className="min-h-screen bg-slate-100 ">
       <Header />
       <div>
         <Outlet />
