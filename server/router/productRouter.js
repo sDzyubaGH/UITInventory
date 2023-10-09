@@ -10,9 +10,10 @@ productRouter.post(
     check("name", "Это поле не может быть пустым").notEmpty(),
     check("quantity", "Это поле не может быть пустым").notEmpty(),
   ],
+  authMiddleware,
   prodController.postProduct
 ); // Добавление товара
-productRouter.get("/allProduct", authMiddleware, prodController.getFullProduct); //Получение всех товаров на складе
+productRouter.get("/allProduct", prodController.getFullProduct); //Получение всех товаров на складе
 productRouter.get(
   "/latestAction",
   authMiddleware,
