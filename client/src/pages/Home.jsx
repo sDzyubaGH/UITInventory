@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import NewsItem from "../components/News/NewsItem";
-import SideBar from "../components/Navbar/SideBar";
 import NewsService from "../service/FetchNewsService.js";
 import Pagination from "../components/Pagination";
 
