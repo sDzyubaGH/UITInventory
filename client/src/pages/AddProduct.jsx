@@ -1,33 +1,46 @@
-import React, { useEffect, useState } from "react";
-import TableElement from "../components/AddProduct/TableElement";
+import React from "react";
+import { useState } from "react";
 import authAxios from "../service/axios";
+import TableListElement from "../components/AddProduct/TableListElement";
 
-const AddProduct = () => {
+function AddProduct() {
+  const [productList, setProductList] = useState([
+    { productName: "", quantity: "" },
+  ]);
   const [formLoading, setFormLoading] = useState(false);
-  const [productName, setProductName] = useState("");
-  const [quantity, setQuantity] = useState(1);
-  const [productList, setProductList] = useState([{ productName, quantity }]);
 
-  const handleAddProductLine = (event) => {
-    event.preventDefault();
-    setProductList((prevProductList) => [...prevProductList, {}]);
+  const handleInputChange = (index, event) => {
+    //Управление Input
+    const { name, value } = event.target;
+    const updatedFields = [...productList];
+    updatedFields[index][name] = value;
+    setProductList(updatedFields);
   };
 
-  const handleFormSumbit = async (event) => {
-    event.preventDefault();
-    console.log(quantity);
-    setFormLoading(true);
+  const handleFormSumbit = async (e) => {
+    //Отправка формы на сервер
     try {
-      const response = await authAxios.post(
-        "http://localhost:8000/api/product/addProduct",
-        { name: productName, quantity }
-      );
-      console.log("Product added:", response.data);
+      e.preventDefault();
+
+      setFormLoading(true);
+      for (const product of productList) {
+        await authAxios.post("http://localhost:8000/api/product/addProduct", {
+          name: product.productName,
+          quantity: parseInt(product.quantity),
+        });
+      }
+      e.target.reset();
+      console.log("Product add");
     } catch (error) {
-      error;
+      console.error("Ошибка при отправке", error);
     } finally {
       setFormLoading(false);
     }
+  };
+
+  const handleAddProductField = () => {
+    // Добавление строки
+    setProductList([...productList, { productName: "", quantity: "" }]);
   };
 
   return (
@@ -41,23 +54,18 @@ const AddProduct = () => {
         </h1>
         {/* Элементы Таблицы */}
 
-        <div className=" space-y-6 mb-6 overflow-hidden hover:overflow-auto h-[216px]">
-          {productList.map((post, index) => (
-            <TableElement
-              key={index}
-              productName={productName}
-              quantity={quantity}
-              setProductName={setProductName}
-              setQuantity={setQuantity}
-            />
-          ))}
+        <div className=" mb-6 overflow-hidden hover:overflow-auto h-[216px]">
+          <TableListElement
+            productList={productList}
+            handleInputChange={handleInputChange}
+          />
         </div>
         {/* Добавление Элемента */}
         <div className="">
           <button
             className="group relative inline-block text-sm font-semibold text-indigo-600   "
             type="button"
-            onClick={handleAddProductLine}
+            onClick={handleAddProductField}
           >
             <span className="rounded absolute inset-0 translate-x-0.5 translate-y-0.5 bg-indigo-600 transition-transform group-hover:translate-y-0 group-hover:translate-x-0  "></span>
             <span className="rounded relative block border border-current bg-white px-10 py-2 active:bg-indigo-600 active:text-white ">
@@ -91,6 +99,6 @@ const AddProduct = () => {
       </form>
     </div>
   );
-};
+}
 
 export default AddProduct;
