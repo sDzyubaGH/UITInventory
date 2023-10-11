@@ -10,7 +10,7 @@ function AddProduct() {
   const [formLoading, setFormLoading] = useState(false);
 
   const handleInputChange = (index, event) => {
-    //Управление Input
+    //Управление Input'ами
     const { name, value } = event.target;
     const updatedFields = [...productList];
     updatedFields[index][name] = value;
@@ -43,6 +43,10 @@ function AddProduct() {
     setProductList([...productList, { productName: "", quantity: "" }]);
   };
 
+  const handleDeleteProductField = (index) => {
+    setProductList([...productList].splice(index, 1)); // удаление из массива
+  };
+
   return (
     <div className="flex justify-center items-center min-h-screen ">
       <form
@@ -63,7 +67,7 @@ function AddProduct() {
         {/* Добавление Элемента */}
         <div className="">
           <button
-            className="group relative inline-block text-sm font-semibold text-indigo-600   "
+            className="group relative inline-block text-sm font-semibold text-indigo-600     "
             type="button"
             onClick={handleAddProductField}
           >
@@ -72,7 +76,19 @@ function AddProduct() {
               Добавить строку
             </span>
           </button>
+
+          <button
+            className="group relative inline-block text-sm font-semibold text-indigo-600 ml-[100px]   "
+            type="button"
+            onClick={handleDeleteProductField}
+          >
+            <span className="rounded absolute inset-0 translate-x-0.5 translate-y-0.5 bg-indigo-600 transition-transform group-hover:translate-y-0 group-hover:translate-x-0  "></span>
+            <span className="rounded relative block border border-current bg-white px-10 py-2 active:bg-indigo-600 active:text-white ">
+              Удалить строку
+            </span>
+          </button>
         </div>
+
         {/* Добавление файла */}
         {/* <div className="relative inline-block mt-14">
           <label className="cursor-pointer px-4 py-2 bg-white text-indigo-600 border border-indigo-600 rounded ">
