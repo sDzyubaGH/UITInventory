@@ -1,4 +1,4 @@
-import ProductService from "../service/productService";
+import ProductService from "./ProductService.js";
 
 export default class NewsService {
   async getLatestNews() {

@@ -2,11 +2,11 @@ import React from "react";
 
 function TableElement({ product, index, handleInputChange }) {
   return (
-    <div>
+    <div className="animate-fade-right ">
       <input
         type="text"
         name="productName"
-        className="border-indigo-500 border-2 w-2/4 h-12 shadow-md p-4  focus:outline-none hover:shadow-indigo-400"
+        className="border-indigo-500 border-2 w-2/4 h-12 shadow-md p-4  focus:outline-none hover:shadow-indigo-400 "
         placeholder="Введите наименование товара"
         value={product.productName}
         onChange={(event) => {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useState } from "react";
 import authAxios from "../service/axios";
 import TableListElement from "../components/AddProduct/TableListElement";
@@ -18,10 +18,8 @@ function AddProduct() {
   };
 
   const handleFormSumbit = async (e) => {
-    //Отправка формы на сервер
     try {
       e.preventDefault();
-
       setFormLoading(true);
       for (const product of productList) {
         await authAxios.post("http://localhost:8000/api/product/addProduct", {
@@ -29,36 +27,37 @@ function AddProduct() {
           quantity: parseInt(product.quantity),
         });
       }
-      e.target.reset();
+
+      setFormLoading().current.reset();
+
       console.log("Product add");
     } catch (error) {
       console.error("Ошибка при отправке", error);
     } finally {
-      setFormLoading(false);
+      setFormLoading(false).reset();
     }
   };
 
   const handleAddProductField = () => {
-    // Добавление строки
     setProductList([...productList, { productName: "", quantity: "" }]);
   };
 
   const handleDeleteProductField = (index) => {
-    setProductList([...productList].splice(index, 1)); // удаление из массива
+    setProductList([...productList].splice(index, 1)); // Удаление из массива
   };
 
   return (
     <div className="flex justify-center items-center min-h-screen ">
       <form
-        className="flex flex-col  h-[600px] w-[1378px] border-2  p-10 shadow-lg shadow-slate-500"
+        className="flex flex-col  h-[600px] w-[1378px] border-2  p-10 shadow-lg shadow-slate-500 rounded-xl"
         onSubmit={handleFormSumbit}
       >
-        <h1 className="text-center mb-6 text-xl font-medium ">
+        <h1 className="text-center mb-6 text-xl font-serif ">
           Добавить товар на склад
         </h1>
         {/* Элементы Таблицы */}
 
-        <div className=" mb-6 overflow-hidden hover:overflow-auto h-[216px]">
+        <div className=" mb-6 overflow-hidden hover:overflow-auto h-[216px] ">
           <TableListElement
             productList={productList}
             handleInputChange={handleInputChange}
