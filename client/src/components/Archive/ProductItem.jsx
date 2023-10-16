@@ -2,17 +2,14 @@ import React from "react";
 
 function ProductItem({ prodItem, id }) {
   return (
-    <div className="flex items-center justify-between bg-white rounded-lg h-12 px-5 w-auto">
-      <div className="overflow-auto max-h-12 ">
-        <p className="break-words w-auto ">
-          {prodItem.fullProduct.productName}
-        </p>
+    <div className="flex items-center justify-between rounded-lg h-20 px-5 w-[600px] font-myFont text-lg border-indigo-300 border-2 border-solid hover:border-indigo-500 hover:shadow-indigo-400 ">
+      <div className="overflow-auto break-words w-28 max-h-10">
+        {prodItem.productName}
       </div>
-      <p>{prodItem.fullProduct.productQuantity}</p>
-      <p>{prodItem.fullProduct.productAddDate}</p>
+      <p>{prodItem.productQuantity}</p>
+      <p>{prodItem.productAddDate}</p>
     </div>
   );
 }
 
 export default ProductItem;
-// flex justify-between items-center  h-10 rounded-md px-8 bg-white mt-8 mb-5 shadow-lg

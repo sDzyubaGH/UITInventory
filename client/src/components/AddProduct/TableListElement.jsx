@@ -1,14 +1,15 @@
 import React from "react";
 import TableElement from "./TableElement";
 
-function TableListElement({ productList, handleInputChange }) {
+function TableListElement({ productList, handleInputChange, deleteProduct }) {
   return (
     <div className="space-y-3">
-      {productList.map((product, index) => (
+      {productList.map((product) => (
         <TableElement
+          key={product.id}
           product={product}
-          index={index}
           handleInputChange={handleInputChange}
+          deleteProduct={deleteProduct}
         />
       ))}
     </div>

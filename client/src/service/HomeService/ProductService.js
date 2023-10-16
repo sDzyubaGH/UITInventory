@@ -1,4 +1,4 @@
-import authAxios from "./axios.js";
+import authAxios from "../axios.js";
 
 export default class ProductService {
   static async getLatest() {

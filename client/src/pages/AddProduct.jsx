@@ -2,18 +2,22 @@ import React, { useRef } from "react";
 import { useState } from "react";
 import authAxios from "../service/axios";
 import TableListElement from "../components/AddProduct/TableListElement";
+import { v4 as uuidv4 } from "uuid";
 
 function AddProduct() {
   const [productList, setProductList] = useState([
-    { productName: "", quantity: "" },
+    { id: uuidv4(), productName: "", quantity: "" },
   ]);
   const [formLoading, setFormLoading] = useState(false);
 
-  const handleInputChange = (index, event) => {
-    //Управление Input'ами
+  const handleInputChange = (id, event) => {
     const { name, value } = event.target;
-    const updatedFields = [...productList];
-    updatedFields[index][name] = value;
+    const updatedFields = productList.map((product) => {
+      if (product.id === id) {
+        return { ...product, [name]: value };
+      }
+      return product;
+    });
     setProductList(updatedFields);
   };
 
@@ -28,39 +32,62 @@ function AddProduct() {
         });
       }
 
-      setFormLoading().current.reset();
+      const buf = [];
+      for (let i = 0; i < productList.length; i++) {
+        buf.push({ productName: "", quantity: "" });
+      }
+      setProductList(buf);
 
       console.log("Product add");
     } catch (error) {
       console.error("Ошибка при отправке", error);
     } finally {
-      setFormLoading(false).reset();
+      setFormLoading(false);
     }
   };
 
   const handleAddProductField = () => {
-    setProductList([...productList, { productName: "", quantity: "" }]);
+    setProductList([
+      ...productList,
+      { id: uuidv4(), productName: "", quantity: "" },
+    ]);
   };
 
-  const handleDeleteProductField = (index) => {
-    setProductList([...productList].splice(index, 1)); // Удаление из массива
+  const handleDeleteProductField = (id) => {
+    setProductList([{ productName: "", quantity: "" }]); // Удаление из массива
+  };
+
+  const deleteProduct = (id) => {
+    if (productList.length === 1) return;
+
+    let buf = [...productList];
+
+    for (let i = 0; i < buf.length; i++) {
+      if (buf[i].id === id) {
+        buf.splice(i, 1);
+        break;
+      }
+    }
+
+    setProductList(buf);
   };
 
   return (
     <div className="flex justify-center items-center min-h-screen ">
       <form
-        className="flex flex-col  h-[600px] w-[1378px] border-2  p-10 shadow-lg shadow-slate-500 rounded-xl"
+        className="flex flex-col  h-[600px] w-[1378px] border-2 p-10  bg-white rounded-xl shadow-xl shadow-indigo-300"
         onSubmit={handleFormSumbit}
       >
-        <h1 className="text-center mb-6 text-xl font-serif ">
+        <h1 className="text-center mb-6 text-xl font-myFont ">
           Добавить товар на склад
         </h1>
         {/* Элементы Таблицы */}
 
-        <div className=" mb-6 overflow-hidden hover:overflow-auto h-[216px] ">
+        <div className=" mb-6 overflow-y-scroll h-[216px] ">
           <TableListElement
             productList={productList}
             handleInputChange={handleInputChange}
+            deleteProduct={deleteProduct}
           />
         </div>
         {/* Добавление Элемента */}
@@ -83,7 +110,7 @@ function AddProduct() {
           >
             <span className="rounded absolute inset-0 translate-x-0.5 translate-y-0.5 bg-indigo-600 transition-transform group-hover:translate-y-0 group-hover:translate-x-0  "></span>
             <span className="rounded relative block border border-current bg-white px-10 py-2 active:bg-indigo-600 active:text-white ">
-              Удалить строку
+              Удалить все
             </span>
           </button>
         </div>

@@ -22,7 +22,7 @@ authAxios.interceptors.response.use(
     if (error.status === 403) {
       localStorage.removeItem("access_token");
       localStorage.removeItem("user");
-    } else throw error();
+    } else throw error;
   }
 );
 

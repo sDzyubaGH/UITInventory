@@ -1,8 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
+import { TiDelete, TiDeleteOutline } from "react-icons/ti";
 
-function TableElement({ product, index, handleInputChange }) {
+function TableElement({ product, handleInputChange, deleteProduct }) {
+  const deleteProductHandler = () => {
+    deleteProduct(product.id);
+    setIsDeletingProduct((prevState) => !prevState);
+  };
+
+  const [isDeletingProduct, setIsDeletingProduct] = useState(false);
   return (
     <div className="animate-fade-right ">
+      <button
+        onMouseUp={deleteProductHandler}
+        onMouseDown={() => setIsDeletingProduct((prevState) => !prevState)}
+      >
+        {isDeletingProduct ? (
+          <TiDeleteOutline className="text-3xl text-center " />
+        ) : (
+          <TiDelete className="text-3xl text-center " />
+        )}
+      </button>
       <input
         type="text"
         name="productName"
@@ -10,17 +27,18 @@ function TableElement({ product, index, handleInputChange }) {
         placeholder="Введите наименование товара"
         value={product.productName}
         onChange={(event) => {
-          handleInputChange(index, event);
+          handleInputChange(product.id, event);
         }}
       />
       <input
         type="number"
+        min="1"
         name="quantity"
         className="w-[120px] h-12 border-2 border-gray-300 ml-6 rounded-lg focus:outline-none p-4 hover:border-slate-400"
         placeholder="Кол-во"
         value={product.quantity}
         onChange={(event) => {
-          handleInputChange(index, event);
+          handleInputChange(product.id, event);
         }}
       />
     </div>
