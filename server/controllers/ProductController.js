@@ -1,3 +1,4 @@
+import { validationResult } from "express-validator";
 import { prisma } from "../service/prisma.js";
 import "dotenv/config.js";
 
@@ -57,6 +58,11 @@ class ProductController {
   }
 
   async postProduct(req, res, next) {
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+      return res.status(400).json({ errors: result.array() });
+    }
+
     const { name, quantity, add_date } = req.body;
     try {
       const addProduct = await prisma.product.create({
@@ -77,7 +83,7 @@ class ProductController {
 
   async getFullProduct(req, res, next) {
     try {
-      const fullProduct = await prisma.product.findMany();
+      const fullProduct = await prisma.product.findMany({});
       if (fullProduct.length === 0) {
         res.status(404).json({ message: "База данных пуста" });
       }
