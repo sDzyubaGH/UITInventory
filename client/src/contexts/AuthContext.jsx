@@ -27,7 +27,7 @@ export const AuthContextProvider = ({ children }) => {
         localStorage.removeItem("user");
       } else {
         // Обработка других ошибок
-        console.error("Произошла ошибка:", error.message);
+        console.log("Произошла ошибка:", error.message);
       }
     }
   }, []);
