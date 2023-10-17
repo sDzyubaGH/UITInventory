@@ -82,12 +82,16 @@ class ProductController {
   }
 
   async getFullProduct(req, res, next) {
+    const { take, skip } = req.query;
     try {
-      const fullProduct = await prisma.product.findMany({});
-      if (fullProduct.length === 0) {
-        res.status(404).json({ message: "База данных пуста" });
-      }
-      res.status(200).json({ message: "Список всех товаров", fullProduct });
+      const fullProduct = await prisma.product.findMany({
+        take: parseInt(take),
+        skip: parseInt(skip),
+      });
+      // if (fullProduct.length === 0) {
+      //   return res.status(200).json(fullProduct);
+      // }
+      return res.status(200).json(fullProduct);
     } catch (error) {
       console.error("Ошибка при получении списка товаров:", error);
       res.status(400).json({ message: "Ошибка" });
