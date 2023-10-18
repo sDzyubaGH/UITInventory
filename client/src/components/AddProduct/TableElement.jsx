@@ -7,6 +7,8 @@ function TableElement({ product, handleInputChange, deleteProduct }) {
     setIsDeletingProduct((prevState) => !prevState);
   };
 
+  console.log(product.id);
+
   const [isDeletingProduct, setIsDeletingProduct] = useState(false);
   return (
     <div className="animate-fade-right ">

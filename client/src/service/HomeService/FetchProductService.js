@@ -1,6 +1,6 @@
 import authAxios from "../axios.js";
 
-export default class ProductService {
+export default class FetchProductService {
   static async getLatest() {
     try {
       const response = await authAxios.get(
@@ -8,7 +8,7 @@ export default class ProductService {
       );
       return response;
     } catch (error) {
-      console.log(error);
+      error;
     }
   }
 }

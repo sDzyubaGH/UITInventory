@@ -3,6 +3,7 @@ import { useState } from "react";
 import authAxios from "../service/axios";
 import TableListElement from "../components/AddProduct/TableListElement";
 import { v4 as uuidv4 } from "uuid";
+import { useAuth } from "../contexts/AuthContext";
 
 function AddProduct() {
   const [productList, setProductList] = useState([
