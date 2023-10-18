@@ -87,6 +87,7 @@ class ProductController {
       const fullProduct = await prisma.product.findMany({
         take: parseInt(take),
         skip: parseInt(skip),
+        orderBy: { id: "desc" },
       });
       // if (fullProduct.length === 0) {
       //   return res.status(200).json(fullProduct);
