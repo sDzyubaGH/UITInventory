@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import NewsItem from "../components/News/NewsItem";
-import SideBar from "../components/Navbar/SideBar";
-import NewsService from "../service/FetchNewsService.js";
+import NewsService from "../service/HomeService/NewsService.js";
 import Pagination from "../components/Pagination";
 
 const newsService = new NewsService();
@@ -33,9 +32,8 @@ const Home = () => {
   return (
     <div>
       <div className="flex">
-        {/* <SideBar /> */}
         <div className="flex flex-col w-full  mb-7 items-center m-4 ml-3">
-          <h1 className="text-center text-2xl font-semibold mt-2">
+          <h1 className="text-center text-2xl font-myFont mt-2">
             Последние изменения
           </h1>
           {currentIndex.map((news, index) => (

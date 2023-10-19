@@ -70,9 +70,7 @@ function Registration() {
         </h1>
 
         {success ? (
-          <p className="mb-2 text-green-500  text-center">
-            {success}
-          </p>
+          <p className="mb-2 text-green-500  text-center">{success}</p>
         ) : (
           <p className="mb-2 text-red-500 break-all text-center">{error}</p>
         )}

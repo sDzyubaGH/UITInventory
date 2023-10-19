@@ -1,8 +1,8 @@
-import ProductService from "../service/productService";
+import FetchProductService from "./FetchProductService.js";
 
 export default class NewsService {
   async getLatestNews() {
-    const response = await ProductService.getLatest();
+    const response = await FetchProductService.getLatest();
     const latestActions = response.data.latestActions.map((post) => {
       const productInfo = post.product;
       const userInfo = post.user;

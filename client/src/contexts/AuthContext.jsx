@@ -1,4 +1,3 @@
-// import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
 import React from "react";
 import authAxios from "../service/axios";
@@ -15,32 +14,34 @@ const AuthContext = createContext(initialState); // объявление кон�
 //Создаем провайдер от нашего контекста
 export const AuthContextProvider = ({ children }) => {
   const [token, setValidToken] = useState(localStorage.getItem("access_token"));
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')) || {});
+  const [user, setUser] = useState(
+    JSON.parse(localStorage.getItem("user")) || {}
+  );
 
   useEffect(() => {
     try {
-          authAxios.get("/user/auth")
+      authAxios.get("/user/auth");
     } catch (error) {
-        if (error.response && error.response.status === 403) {
-            localStorage.removeItem("access_token");
-            localStorage.removeItem("user");
-          } else {
-            // Обработка других ошибок
-            console.error("Произошла ошибка:", error.message);
-          }
-        }
-    }, []);
+      if (error.response && error.response.status === 403) {
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("user");
+      } else {
+        // Обработка других ошибок
+        console.log("Произошла ошибка:", error.message);
+      }
+    }
+  }, []);
 
-//   const setUserFromToken = (token) => {
-//     const decodedToken = jwt_decode(token)
-//     setUser(decodedToken)
-//   }
+  //   const setUserFromToken = (token) => {
+  //     const decodedToken = jwt_decode(token)
+  //     setUser(decodedToken)
+  //   }
 
   const setToken = (token) => {
     setValidToken(token);
-    const decoded = jwt_decode(token)
-    localStorage.setItem('user', JSON.stringify(decoded))
-    setUser(decoded)
+    const decoded = jwt_decode(token);
+    localStorage.setItem("user", JSON.stringify(decoded));
+    setUser(decoded);
     if (token) localStorage.setItem("access_token", token);
     else localStorage.removeItem("access_token", token);
   };

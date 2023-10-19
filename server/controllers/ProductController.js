@@ -1,3 +1,4 @@
+import { validationResult } from "express-validator";
 import { prisma } from "../service/prisma.js";
 import "dotenv/config.js";
 
@@ -57,13 +58,18 @@ class ProductController {
   }
 
   async postProduct(req, res, next) {
-    const { name, quantity, add_date } = req.body;
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+      return res.status(400).json({ errors: result.array() });
+    }
+    const { name, quantity, add_date, user } = req.body;
     try {
       const addProduct = await prisma.product.create({
         data: {
           name,
           quantity,
           add_date,
+          users: user,
         },
       });
       res.status(200).json({
@@ -71,17 +77,23 @@ class ProductController {
         addProduct,
       });
     } catch (error) {
+      console.log("error", error);
       res.status(400).json({ message: "Типовое значение" });
     }
   }
 
   async getFullProduct(req, res, next) {
+    const { take, skip } = req.query;
     try {
-      const fullProduct = await prisma.product.findMany();
-      if (fullProduct.length === 0) {
-        res.status(404).json({ message: "База данных пуста" });
-      }
-      res.status(200).json({ message: "Список всех товаров", fullProduct });
+      const fullProduct = await prisma.product.findMany({
+        take: parseInt(take),
+        skip: parseInt(skip),
+        orderBy: { id: "desc" },
+      });
+      // if (fullProduct.length === 0) {
+      //   return res.status(200).json(fullProduct);
+      // }
+      return res.status(200).json(fullProduct);
     } catch (error) {
       console.error("Ошибка при получении списка товаров:", error);
       res.status(400).json({ message: "Ошибка" });

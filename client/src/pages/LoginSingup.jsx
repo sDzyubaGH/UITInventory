@@ -8,7 +8,7 @@ function LoginSingup() {
   const [formLoading, setFormLoading] = useState(false);
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const { setToken} = useAuth();
+  const { setToken } = useAuth();
   const navigate = useNavigate();
 
   const [login, setLogin] = useState("");
@@ -18,8 +18,8 @@ function LoginSingup() {
     try {
       setFormLoading(true); // флаг состояния загрузки формы
       const send = await authAxios.post(`/user/login`, { login, password }); // асинхронный запрос
-      const token = send.data.accessToken
-      
+      const token = send.data.accessToken;
+
       setToken(token);
       navigate("/info/home");
     } catch (error) {
@@ -34,7 +34,7 @@ function LoginSingup() {
     setPassword(event.target.value); //
   };
 
-  const pwdLogin = (event) => {
+  const loginHandler = (event) => {
     setError("");
     setLogin(event.target.value);
   };
@@ -56,7 +56,7 @@ function LoginSingup() {
             <div>
               <input
                 value={login}
-                onChange={pwdLogin}
+                onChange={loginHandler}
                 className="block w-full px-4 py-2 mt-2 text-gray-700 border rounded-lg hover:border-slate-400 focus:border-blue-400  focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300"
                 placeholder="Login"
               />

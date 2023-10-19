@@ -34,7 +34,6 @@ model Statements {
     date DateTime
     employee String 
     office String
-
     @@id([userId,productId])
 }
 

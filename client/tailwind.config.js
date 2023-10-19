@@ -6,7 +6,10 @@ export default {
       colors: {
         custom: "rgba(28, 30, 46, 1)",
       },
+      fontFamily: {
+        myFont: ["Geologica", "Play", "Roboto"],
+      },
     },
   },
-  plugins: [],
+  plugins: [require("tailwindcss-animated")],
 };
