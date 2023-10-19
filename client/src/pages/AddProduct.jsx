@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import { useState } from "react";
 import authAxios from "../service/axios";
 import TableListElement from "../components/AddProduct/TableListElement";
@@ -11,15 +11,17 @@ function AddProduct() {
   ]);
   const [formLoading, setFormLoading] = useState(false);
 
+  const { user } = useAuth();
+
   const handleInputChange = (id, event) => {
     const { name, value } = event.target;
-    const updatedFields = productList.map((product) => {
+    const updatedProductList = productList.map((product) => {
       if (product.id === id) {
         return { ...product, [name]: value };
       }
       return product;
     });
-    setProductList(updatedFields);
+    setProductList(updatedProductList);
   };
 
   const handleFormSumbit = async (e) => {
@@ -30,15 +32,10 @@ function AddProduct() {
         await authAxios.post("http://localhost:8000/api/product/addProduct", {
           name: product.productName,
           quantity: parseInt(product.quantity),
+          userId: Number(parseInt(user)),
         });
       }
-
-      const buf = [];
-      for (let i = 0; i < productList.length; i++) {
-        buf.push({ productName: "", quantity: "" });
-      }
-      setProductList(buf);
-
+      setProductList([{ id: uuidv4(), productName: "", quantity: "" }]); // Очищаем форму после отправки данных
       console.log("Product add");
     } catch (error) {
       console.error("Ошибка при отправке", error);
@@ -60,16 +57,13 @@ function AddProduct() {
 
   const deleteProduct = (id) => {
     if (productList.length === 1) return;
-
     let buf = [...productList];
-
     for (let i = 0; i < buf.length; i++) {
       if (buf[i].id === id) {
         buf.splice(i, 1);
         break;
       }
     }
-
     setProductList(buf);
   };
 
@@ -83,8 +77,7 @@ function AddProduct() {
           Добавить товар на склад
         </h1>
         {/* Элементы Таблицы */}
-
-        <div className=" mb-6 overflow-y-scroll h-[216px] ">
+        <div className=" m-auto w-[1000px] overflow-y-scroll h-[216px] ">
           <TableListElement
             productList={productList}
             handleInputChange={handleInputChange}
@@ -115,9 +108,8 @@ function AddProduct() {
             </span>
           </button>
         </div>
-
         {/* Добавление файла */}
-        {/* <div className="relative inline-block mt-14">
+        {/* <div className="">
           <label className="cursor-pointer px-4 py-2 bg-white text-indigo-600 border border-indigo-600 rounded ">
             Выберите файл
           </label>
@@ -131,7 +123,7 @@ function AddProduct() {
           />
         </div> */}
         {/* Отправка формы */}
-        <div className=" ml-auto mt-20  ">
+        <div className="ml-auto mt-20">
           <button
             type="submit"
             className=" inline-block rounded bg-indigo-600 px-8 py-3 text-sm font-semibold text-white transition hover:scale-110 hover:shadow-xl focus:outline-none  active:bg-indigo-500"

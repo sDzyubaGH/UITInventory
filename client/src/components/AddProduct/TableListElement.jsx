@@ -3,7 +3,7 @@ import TableElement from "./TableElement";
 
 function TableListElement({ productList, handleInputChange, deleteProduct }) {
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 ">
       {productList.map((product) => (
         <TableElement
           key={product.id}

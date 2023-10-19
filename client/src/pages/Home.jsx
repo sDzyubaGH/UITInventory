@@ -32,7 +32,6 @@ const Home = () => {
   return (
     <div>
       <div className="flex">
-        {/* <SideBar /> */}
         <div className="flex flex-col w-full  mb-7 items-center m-4 ml-3">
           <h1 className="text-center text-2xl font-myFont mt-2">
             Последние изменения

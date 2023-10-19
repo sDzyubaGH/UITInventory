@@ -15,6 +15,7 @@ function TableElement({ product, handleInputChange, deleteProduct }) {
       <button
         onMouseUp={deleteProductHandler}
         onMouseDown={() => setIsDeletingProduct((prevState) => !prevState)}
+        onMouseLeave={() => setIsDeletingProduct(false)}
       >
         {isDeletingProduct ? (
           <TiDeleteOutline className="text-3xl text-center " />
@@ -25,7 +26,7 @@ function TableElement({ product, handleInputChange, deleteProduct }) {
       <input
         type="text"
         name="productName"
-        className="border-indigo-500 border-2 w-2/4 h-12 shadow-md p-4  focus:outline-none hover:shadow-indigo-400 "
+        className="border-indigo-500 border-2 w-3/4 h-12 shadow-md p-4  focus:outline-none hover:shadow-indigo-400 "
         placeholder="Введите наименование товара"
         value={product.productName}
         onChange={(event) => {
@@ -36,7 +37,7 @@ function TableElement({ product, handleInputChange, deleteProduct }) {
         type="number"
         min="1"
         name="quantity"
-        className="w-[120px] h-12 border-2 border-gray-300 ml-6 rounded-lg focus:outline-none p-4 hover:border-slate-400"
+        className="w-[120px] h-12 border-2 border-gray-300 ml-2 rounded-lg focus:outline-none p-4 hover:border-slate-400"
         placeholder="Кол-во"
         value={product.quantity}
         onChange={(event) => {

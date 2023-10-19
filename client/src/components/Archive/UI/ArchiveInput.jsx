@@ -2,15 +2,22 @@ import React, { useState } from "react";
 import { IoSearchCircleSharp } from "react-icons/io5";
 import { MdPersonSearch } from "react-icons/md";
 
-const ArchiveInputs = ({ filterProduct }) => {
+const ArchiveInputs = ({ allProduct }) => {
   const [searchProduct, setSearchProduct] = useState("");
+  const filterProduct = allProduct.filter((item) => {
+    const newArray = allProduct.map((product) =>
+      product.productName.toLowerCase()
+    );
+    const filter = newArray.filter((item) =>
+      item.includes(searchProduct.toLowerCase())
+    );
+    console.log(filter);
+  });
 
   const handleSearch = (event) => {
+    console.log(event.target.value);
     setSearchProduct(event.target.value);
-    filterProduct(event.target.value);
   };
-
-  console.log(filterProduct);
 
   return (
     <div className="mt-8 flex ">

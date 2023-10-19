@@ -31,11 +31,13 @@ const Archive = () => {
 
         const fullProduct = {
           id: product.id,
+
           productName: product.name,
           productQuantity: product.quantity,
           productAddDate: formattedDate,
         };
 
+        console.log(fullProduct);
         return fullProduct;
       });
 
@@ -60,22 +62,11 @@ const Archive = () => {
     handleFetchData();
   }, []);
 
-  // console.log(allProduct);
-  //Search
-  const filterProduct = useMemo(
-    (textMessage) => {
-      return [...allProduct].filter((item) => {
-        item.productName.includes(textMessage);
-      });
-    },
-    [setAllProduct]
-  );
-
   return (
-    <div className="flex justify-center bg-white min-h-screen">
-      <div className="flex items-center flex-col border border-white my-10 px-10  shadow-2xl shadow-indigo-400 bg-white ">
+    <div className="flex justify-center  min-h-screen">
+      <div className="flex items-center flex-col border border-white my-10 px-10  shadow-2xl shadow-indigo-600 bg-white ">
         <h1 className="mt-5 text-2xl font-myFont ">Архив</h1>
-        <ArchiveInputs filterProduct={filterProduct} />
+        <ArchiveInputs allProduct={allProduct} />
         <InfiniteScroll
           dataLength={allProduct.length}
           next={handleFetchData}
