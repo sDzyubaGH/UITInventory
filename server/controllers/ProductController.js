@@ -62,14 +62,14 @@ class ProductController {
     if (!result.isEmpty()) {
       return res.status(400).json({ errors: result.array() });
     }
-
-    const { name, quantity, add_date } = req.body;
+    const { name, quantity, add_date, user } = req.body;
     try {
       const addProduct = await prisma.product.create({
         data: {
           name,
           quantity,
           add_date,
+          users: user,
         },
       });
       res.status(200).json({
@@ -77,6 +77,7 @@ class ProductController {
         addProduct,
       });
     } catch (error) {
+      console.log("error", error);
       res.status(400).json({ message: "Типовое значение" });
     }
   }
