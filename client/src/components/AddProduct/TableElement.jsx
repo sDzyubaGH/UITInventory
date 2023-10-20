@@ -11,7 +11,7 @@ function TableElement({ product, handleInputChange, deleteProduct }) {
 
   const [isDeletingProduct, setIsDeletingProduct] = useState(false);
   return (
-    <div className="animate-fade-right ">
+    <div className="animate-fade-right">
       <button
         onMouseUp={deleteProductHandler}
         onMouseDown={() => setIsDeletingProduct((prevState) => !prevState)}
