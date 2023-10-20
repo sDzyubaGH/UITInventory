@@ -1,6 +1,7 @@
 import { validationResult } from "express-validator";
 import { prisma } from "../service/prisma.js";
 import "dotenv/config.js";
+import ApiError from "../errors/ApiError.js";
 
 class ProductController {
   async getLatestActions(req, res, next) {
@@ -28,8 +29,7 @@ class ProductController {
 
       res.status(200).json({ message: "Последние изменения", latestActions });
     } catch (error) {
-      console.error("Ошибка запроса:", error);
-      res.status(500).json({ message: "Произошла ошибка сервера" });
+      next(ApiError.badRequest('LatestActionsError:', error.message))
     }
   }
 

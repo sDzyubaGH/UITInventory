@@ -1,0 +1,81 @@
+error: 
+Invalid `prisma.user.findFirst()` invocation:
+
+
+Can't reach database server at `localhost`:`5432`
+
+Please make sure your database server is running at `localhost`:`5432`.Error: 
+Invalid `prisma.user.findFirst()` invocation:
+
+
+Can't reach database server at `localhost`:`5432`
+
+Please make sure your database server is running at `localhost`:`5432`.
+    at ApiError.internal (file:///C:/dev/UITInventory/server/src/errors/ApiError.js:16:12)
+    at registration (file:///C:/dev/UITInventory/server/src/controllers/AuthController.js:24:21)
+error: 
+Invalid `prisma.user.findFirst()` invocation:
+
+
+Can't reach database server at `localhost`:`5432`
+
+Please make sure your database server is running at `localhost`:`5432`.
+
+
+
+Error: 
+Invalid `prisma.user.findFirst()` invocation:
+
+
+Can't reach database server at `localhost`:`5432`
+
+Please make sure your database server is running at `localhost`:`5432`.
+    at ApiError.internal (file:///C:/dev/UITInventory/server/src/errors/ApiError.js:16:12)
+    at registration (file:///C:/dev/UITInventory/server/src/controllers/AuthController.js:24:21)
+error: 
+Invalid `prisma.user.findFirst()` invocation:
+
+
+Can't reach database server at `localhost`:`5432`
+
+Please make sure your database server is running at `localhost`:`5432`.Error: 
+Invalid `prisma.user.findFirst()` invocation:
+
+
+Can't reach database server at `localhost`:`5432`
+
+Please make sure your database server is running at `localhost`:`5432`.
+    at ApiError.internal (file:///C:/dev/UITInventory/server/src/errors/ApiError.js:16:12)
+    at registration (file:///C:/dev/UITInventory/server/src/controllers/AuthController.js:24:21)
+error: 
+Invalid `prisma.user.findFirst()` invocation:
+
+
+Can't reach database server at `localhost`:`5432`
+
+Please make sure your database server is running at `localhost`:`5432`.
+Error: 
+Invalid `prisma.user.findFirst()` invocation:
+
+
+Can't reach database server at `localhost`:`5432`
+
+Please make sure your database server is running at `localhost`:`5432`.
+    at ApiError.internal (file:///C:/dev/UITInventory/server/src/errors/ApiError.js:16:12)
+    at registration (file:///C:/dev/UITInventory/server/src/controllers/AuthController.js:24:21)
+error: 
+Invalid `prisma.user.findFirst()` invocation:
+
+
+Can't reach database server at `localhost`:`5432`
+
+Please make sure your database server is running at `localhost`:`5432`.
+Error: 
+Invalid `prisma.user.findFirst()` invocation:
+
+
+Can't reach database server at `localhost`:`5432`
+
+Please make sure your database server is running at `localhost`:`5432`.
+    at ApiError.internal (file:///C:/dev/UITInventory/server/src/errors/ApiError.js:16:12)
+    at registration (file:///C:/dev/UITInventory/server/src/controllers/AuthController.js:24:21)

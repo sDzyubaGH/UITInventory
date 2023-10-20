@@ -1,28 +1,33 @@
 import express from "express";
 import "dotenv/config";
 import cors from "cors";
-
-import indexRouter from "../router/index.js";
+import indexRouter from "./router/index.js";
+import { logger } from "./logger.js";
+import errorLogHandler from "./errorLogHandler.js";
+import errorHandler from "./errorHandler.js";
 
 const app = express();
-const PORT = process.env.PORT;
+const { PORT } = process.env;
 
 app.use(express.json());
 app.use(cors());
 
 app.use("/api", indexRouter);
 
+// logging
+app.use(errorLogHandler)
+// error handler
+app.use(errorHandler)
+
 const start = async () => {
   try {
     app.listen(PORT, () => {
-      console.log(`Server start on port ${PORT}`);
+      logger.info(`Server start on port ${PORT}`);
     });
   } catch (error) {
-    console.log(error);
+    logger.error(error.message)
+    process.exit(-1)
   }
 };
+
 start();
-// await prisma.$connect(process.env.DATABASE_URL);
-// Нет необходимости вызывать $connect() благодаря поведению отложенного подключения:
-// экземпляр PrismaClient подключается лениво при первом запросе к API ($connect() вызывается «под капотом»).
-// Если  нужно, чтобы первый запрос ответил мгновенно вызываем явно prisma.$connect()

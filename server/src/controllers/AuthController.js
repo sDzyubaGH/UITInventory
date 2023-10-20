@@ -3,16 +3,11 @@ import "dotenv/config.js";
 import bcryptjs, { hash } from "bcrypt";
 import { validationResult } from "express-validator";
 import { token } from "../service/token-service.js";
+import ApiError from "../errors/ApiError.js";
 
 class AuthController {
   async registration(req, res, next) {
     try {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res
-          .status(400)
-          .json({ message: "Ошибка при регистрации", errors });
-      }
       const { login, password, firstName, surname, position = null } = req.body;
       const candidate = await prisma.user.findFirst({ where: { login } });
       if (candidate) {
@@ -24,9 +19,10 @@ class AuthController {
       const user = await prisma.user.create({
         data: { login, password: pswdHash, firstName, surname, position },
       });
-      res.status(200).send({ message: `Регистрация прошла успешно`, user });
+      return res.status(200).send({ message: `Регистрация прошла успешно`, user });
     } catch (error) {
-      res.status(500).json({ message: "Ошибка Регистрации" });
+      next(ApiError.internal(error.message))
+      // res.status(500).json({ message: "Ошибка Регистрации" });
     }
   }
 
@@ -35,14 +31,14 @@ class AuthController {
       const { login, password } = req.body;
       const user = await prisma.user.findFirst({ where: { login } });
       if (!user) {
-        return res
-          .status(400)
-          .json({ message: `Пользователь ${login} не найден` });
+        return res.status(400).json({ message: `Пользователь ${login} не найден` });
       }
+
       const validPassword = bcryptjs.compareSync(password, user.password);
       if (!validPassword) {
         return res.status(400).json({ message: "Неверный пароль" });
       }
+
       const accessToken = token.generateTokens({
         id: user.id,
         lastName: user.surname,
@@ -51,7 +47,7 @@ class AuthController {
 
       return res.status(200).json({ accessToken });
     } catch (error) {
-      res.status(400).json({ message: "Ошибка логина" });
+      next(ApiError.internal('LoginError:', error.message))
     }
   }
 
@@ -59,7 +55,9 @@ class AuthController {
     try {
       const token = token.generateTokens(req.user.id);
       return res.status(200).json({ token });
-    } catch (error) {}
+    } catch (error) {
+      next(ApiError.internal('CheckAuthError:', error.message))
+    }
   }
 }
 
