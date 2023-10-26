@@ -5,28 +5,22 @@ import "dotenv/config.js";
 class ProductController {
   async getLatestActions(req, res, next) {
     try {
-      const latestActions = await prisma.statements.findMany({
-        select: {
+      const latest = await prisma.actions.findMany({
+        take: 20,
+        include: {
           user: {
             select: {
+              id: true,
               firstName: true,
               surname: true,
+              position: true,
             },
           },
-          product: {
-            select: {
-              name: true,
-              add_date: true,
-            },
-          },
+          product: true,
         },
-        orderBy: {
-          date: "desc",
-        },
-        take: 20,
+        orderBy: { id: "desc" },
       });
-
-      res.status(200).json({ message: "Последние изменения", latestActions });
+      res.status(200).json({ message: "Последние изменения", latest });
     } catch (error) {
       console.error("Ошибка запроса:", error);
       res.status(500).json({ message: "Произошла ошибка сервера" });
@@ -35,15 +29,15 @@ class ProductController {
 
   async addStatement(req, res, next) {
     const { userId, productId, date, employee, office } = req.body;
-
     try {
-      const createdStatement = await prisma.statements.create({
+      const createdStatement = await prisma.actions.create({
         data: {
           userId,
           productId,
           date,
           employee,
           office,
+          date,
         },
       });
 
@@ -62,14 +56,18 @@ class ProductController {
     if (!result.isEmpty()) {
       return res.status(400).json({ errors: result.array() });
     }
-    const { name, quantity, add_date, user } = req.body;
+    const { name, quantity, add_date, userId } = req.body;
     try {
       const addProduct = await prisma.product.create({
         data: {
+          users: {
+            create: {
+              userId: userId,
+            },
+          },
           name,
           quantity,
           add_date,
-          users: user,
         },
       });
       res.status(200).json({
@@ -85,14 +83,42 @@ class ProductController {
   async getFullProduct(req, res, next) {
     const { take, skip } = req.query;
     try {
-      const fullProduct = await prisma.product.findMany({
-        take: parseInt(take),
-        skip: parseInt(skip),
+      const fullProduct = await prisma.actions.findMany({
+        take: parseInt(take) || 10,
+        skip: parseInt(skip) || 0,
+
+        where: {
+          type: "ADD",
+        },
+        include: {
+          user: {
+            select: {
+              id: true,
+              firstName: true,
+              surname: true,
+              position: true,
+            },
+          },
+          product: true,
+        },
         orderBy: { id: "desc" },
       });
-      // if (fullProduct.length === 0) {
-      //   return res.status(200).json(fullProduct);
-      // }
+      return res.status(200).json(fullProduct);
+    } catch (error) {
+      console.error("Ошибка при получении списка товаров:", error);
+      res.status(400).json({ message: "Ошибка" });
+    }
+  }
+
+  async searchProducts(req, res, next) {
+    const { name } = req.query;
+    try {
+      const fullProduct = await prisma.product.findMany({
+        orderBy: { id: "desc" },
+        where: {
+          name,
+        },
+      });
       return res.status(200).json(fullProduct);
     } catch (error) {
       console.error("Ошибка при получении списка товаров:", error);

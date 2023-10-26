@@ -15,6 +15,11 @@ productRouter.post(
 ); // Добавление товара
 productRouter.get("/allProduct", authMiddleware, prodController.getFullProduct); //Получение всех товаров на складе
 productRouter.get(
+  "/searchProducts",
+  authMiddleware,
+  prodController.searchProducts
+); //Получение всех товаров на складе
+productRouter.get(
   "/latestAction",
   authMiddleware,
   prodController.getLatestActions
