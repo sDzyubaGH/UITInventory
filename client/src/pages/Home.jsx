@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import NewsItem from "../components/News/NewsItem";
 import NewsService from "../service/HomeService/NewsService.js";
 import Pagination from "../components/Pagination";
+import NewsList from "../components/News/NewsList";
 
 const newsService = new NewsService();
 
@@ -31,14 +32,12 @@ const Home = () => {
 
   return (
     <div>
-      <div className="flex">
-        <div className="flex flex-col w-full  mb-7 items-center m-4 ml-3">
-          <h1 className="text-center text-2xl font-myFont mt-2">
-            Последние изменения
-          </h1>
-          {currentIndex.map((news, index) => (
-            <NewsItem news={news} key={index} />
-          ))}
+      <div>
+        <h1 className="text-center text-2xl font-myFont mt-3">
+          Последние изменения
+        </h1>
+        <div className="flex flex-col items-center">
+          <NewsList currentIndex={currentIndex} />
           <Pagination
             newsPerPage={newsPerPage}
             totalNews={news.length}

@@ -3,9 +3,11 @@ import FetchProductService from "./FetchProductService.js";
 export default class NewsService {
   async getLatestNews() {
     const response = await FetchProductService.getLatest();
-    const latestActions = response.data.latestActions.map((post) => {
-      const productInfo = post.product;
-      const userInfo = post.user;
+
+    console.log(response);
+    const latestActions = response.data.latest.map((action) => {
+      const productInfo = action.product;
+      const userInfo = action.user;
 
       const toTransform = new Date(productInfo.add_date);
       const formattedDate = `${toTransform.getUTCDate()}.${
@@ -16,10 +18,12 @@ export default class NewsService {
         userName: userInfo.firstName + " " + userInfo.surname,
         product: productInfo.name,
         date: formattedDate,
+        type: action.type,
       };
 
       return { latestActions };
     });
+    console.log(latestActions);
     return latestActions;
   }
 }

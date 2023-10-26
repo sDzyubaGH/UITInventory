@@ -13,6 +13,8 @@ function AddProduct() {
 
   const { user } = useAuth();
 
+  console.log(user);
+
   const handleInputChange = (id, event) => {
     const { name, value } = event.target;
     const updatedProductList = productList.map((product) => {
@@ -32,7 +34,7 @@ function AddProduct() {
         await authAxios.post("http://localhost:8000/api/product/addProduct", {
           name: product.productName,
           quantity: parseInt(product.quantity),
-          userId: Number(parseInt(user)),
+          userId: user.id,
         });
       }
       setProductList([{ id: uuidv4(), productName: "", quantity: "" }]); // Очищаем форму после отправки данных

@@ -20,24 +20,27 @@ const Archive = () => {
     setError(false);
     try {
       const response = await authAxios.get(
-        `http://localhost:8000/api/product/allProduct?take=${take}&skip=${skip}`
+        `/product/allProduct?take=${take}&skip=${skip}`
       );
 
-      const fetchData = response.data.map((product) => {
-        const toTransform = new Date(product.add_date);
+      const fetchData = response.data.map((action) => {
+        const toTransform = new Date(action.product.add_date);
         const formattedDate = `${toTransform.getUTCDate()}.${
           toTransform.getUTCMonth() + 1
         }.${toTransform.getUTCFullYear()}`;
 
-        const fullProduct = {
-          id: product.id,
+        console.log(action);
 
-          productName: product.name,
-          productQuantity: product.quantity,
+        const fullProduct = {
+          id: action.id,
+          customerFullName: action.user.firstName + " " + action.user.surname,
+          productName: action.product.name,
+          productQuantity: action.product.quantity,
           productAddDate: formattedDate,
         };
 
-        console.log(fullProduct);
+        console.log(fullProduct.customerFullName);
+
         return fullProduct;
       });
 
@@ -64,7 +67,7 @@ const Archive = () => {
 
   return (
     <div className="flex justify-center  min-h-screen">
-      <div className="flex items-center flex-col border border-white my-10 px-10  shadow-2xl shadow-indigo-600 bg-white ">
+      <div className="flex items-center flex-col border border-white my-10 px-10 rounded-xl shadow-2xl shadow-indigo-600 bg-white ">
         <h1 className="mt-5 text-2xl font-myFont ">Архив</h1>
         <ArchiveInputs allProduct={allProduct} />
         <InfiniteScroll

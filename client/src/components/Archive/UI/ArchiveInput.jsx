@@ -3,22 +3,6 @@ import { IoSearchCircleSharp } from "react-icons/io5";
 import { MdPersonSearch } from "react-icons/md";
 
 const ArchiveInputs = ({ allProduct }) => {
-  const [searchProduct, setSearchProduct] = useState("");
-  const filterProduct = allProduct.filter((item) => {
-    const newArray = allProduct.map((product) =>
-      product.productName.toLowerCase()
-    );
-    const filter = newArray.filter((item) =>
-      item.includes(searchProduct.toLowerCase())
-    );
-    console.log(filter);
-  });
-
-  const handleSearch = (event) => {
-    console.log(event.target.value);
-    setSearchProduct(event.target.value);
-  };
-
   return (
     <div className="mt-8 flex ">
       <div className="relative">
@@ -27,7 +11,6 @@ const ArchiveInputs = ({ allProduct }) => {
           type="text"
           className="bg-white h-9 rounded-lg pl-10 border-orange-300 border-2 shadow-md focus:outline-none"
           placeholder="Поиск товара..."
-          onChange={handleSearch}
         />
       </div>
 

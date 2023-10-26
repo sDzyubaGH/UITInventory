@@ -4,7 +4,7 @@ import ProductItem from "./ProductItem.jsx";
 function ListProductItem({ allProduct }) {
   return (
     <div className="flex flex-col mt-10 mb-5 space-y-4   ">
-      {allProduct.map((prodItem, i) => (
+      {allProduct.map((prodItem) => (
         <ProductItem key={prodItem.id} prodItem={prodItem} />
       ))}
     </div>
