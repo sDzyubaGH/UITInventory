@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 
-import DismissProductList from "../components/DeleteProduct/DismissProductList";
+import ArchiveProductList from "../components/DeleteProduct/ArchiveProductList";
 import LastArchiveElementInput from "../components/DeleteProduct/UI/LastArchiveElementInput";
 import PrintingUI from "../components/DeleteProduct/UI/PrintingUI";
-import DismissUI from "../components/DeleteProduct/UI/DismissUI";
+import DismissProductList from "../components/DeleteProduct/DismissProductList";
 import authAxios from "../service/axios";
 
 const DeleteProduct = () => {
   const [productList, setProductList] = useState([{}]);
+  const [dismissProductList, setDismissProductList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(true);
 
@@ -59,6 +60,15 @@ const DeleteProduct = () => {
     }
   };
 
+  const handleDismissButton = (product) => {
+    const idToRemove = product.id;
+    setDismissProductList([...dismissProductList, product]);
+    const updatedProductList = productList.filter(
+      (product) => product.id !== idToRemove
+    );
+    setProductList(updatedProductList);
+  };
+
   useEffect(() => {
     handleFetchData();
   }, []);
@@ -72,11 +82,19 @@ const DeleteProduct = () => {
             inputTextHandler={inputTextHandler}
             inputText={inputText}
           />
-          <DismissProductList productList={productList} inputText={inputText} />
+          <ArchiveProductList
+            productList={productList}
+            handleDismissButton={handleDismissButton}
+          />
         </div>
       </div>
-      <div className=" w-4/5 h-[700px] border-2 border-indigo-500 shadow-lg shadow-indigo-400 bg-white mr-auto">
-        <DismissUI />
+      <div className=" w-4/5  border-2 border-indigo-500 shadow-lg shadow-indigo-400 bg-white mr-auto">
+        <h1 className="font-myFont text-2xl mt-4 border-b border-gray-400 text-center mx-3">
+          Выписать
+        </h1>
+        <div className="h-[700px] mx-5 flex flex-col">
+          <DismissProductList dismissProductList={dismissProductList} />
+        </div>
       </div>
     </div>
   );

@@ -1,16 +1,20 @@
 import React from "react";
 import DismissProductItem from "./DismissProductItem";
 
-export default function DismissProductList({ productList }) {
+function DismissProductList({ dismissProductList }) {
+  console.log(dismissProductList);
+
   return (
-    <div className="flex flex-col mt-14 px-5 gap-y-6 overflow-auto mb-5 ">
-      {productList.length ? (
-        productList.map((product, id) => (
-          <DismissProductItem product={product} key={id} />
+    <div className="flex flex-col mt-5 px-5 gap-y-6 overflow-auto mb-5">
+      {dismissProductList.length ? (
+        dismissProductList.map((product) => (
+          <DismissProductItem product={product} key={product.id} />
         ))
       ) : (
-        <p className="text-center text-2xl font-myFont">Не обнаружено</p>
+        <p className="text-center text-2xl font-myFont">Добавьте товар</p>
       )}
     </div>
   );
 }
+
+export default DismissProductList;
