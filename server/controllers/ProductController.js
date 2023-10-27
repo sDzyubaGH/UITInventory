@@ -141,5 +141,15 @@ class ProductController {
       res.status(400).json({ message: "Ошибка" });
     }
   }
+
+  async deleteProduct(req, res, next) {
+    try {
+      const deleteProduct = await prisma.actions.delete({});
+      return res.status(200).json({ message: "Товар удален" });
+    } catch (error) {
+      console.error("Ошибка невозможно удалить", error);
+      req.status(400).json({ message: "Ошибка" });
+    }
+  }
 }
 export const prodController = new ProductController();
