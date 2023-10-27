@@ -1,5 +1,6 @@
 import React from "react";
 import DismissProductItem from "./DismissProductItem";
+import { BsCardChecklist } from "react-icons/bs";
 
 function DismissProductList({ dismissProductList }) {
   console.log(dismissProductList);
@@ -11,7 +12,12 @@ function DismissProductList({ dismissProductList }) {
           <DismissProductItem product={product} key={product.id} />
         ))
       ) : (
-        <p className="text-center text-2xl font-myFont">Добавьте товар</p>
+        <div className="text-xl font-myFont">
+          <div className="flex items-center justify-center ">
+            <BsCardChecklist className="text-indigo-600" />
+            <p className="ml-2">Добавьте товар</p>
+          </div>
+        </div>
       )}
     </div>
   );
