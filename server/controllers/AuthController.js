@@ -24,7 +24,14 @@ class AuthController {
       const user = await prisma.user.create({
         data: { login, password: pswdHash, firstName, surname, position },
       });
-      res.status(200).send({ message: `Регистрация прошла успешно`, user });
+      const accessToken = token.generateTokens({
+        id: user.id,
+        lastName: user.surname,
+        firstName: user.firstName,
+      });
+      res
+        .status(200)
+        .send({ message: `Регистрация прошла успешно`, accessToken });
     } catch (error) {
       res.status(500).json({ message: "Ошибка Регистрации" });
     }

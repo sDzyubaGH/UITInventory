@@ -112,14 +112,30 @@ class ProductController {
 
   async searchProducts(req, res, next) {
     const { name } = req.query;
+
     try {
-      const fullProduct = await prisma.product.findMany({
+      const fullProduct = await prisma.actions.findMany({
         orderBy: { id: "desc" },
-        where: {
-          name,
+        include: {
+          product: true,
+          user: true,
         },
       });
-      return res.status(200).json(fullProduct);
+
+      const filteredProducts = fullProduct.filter((ac) => {
+        const p = ac.product;
+        if (p.name.toLowerCase().indexOf(name) !== -1) return true;
+        else return false;
+      });
+
+      const result = [];
+      for (const ac of filteredProducts) {
+        result.push({
+          ...ac.product,
+          customerFullName: `${ac.user.firstName} ${ac.user.surname}`,
+        });
+      }
+      return res.status(200).json(result);
     } catch (error) {
       console.error("Ошибка при получении списка товаров:", error);
       res.status(400).json({ message: "Ошибка" });

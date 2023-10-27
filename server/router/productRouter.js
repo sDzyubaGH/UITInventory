@@ -29,4 +29,6 @@ productRouter.post(
   authMiddleware,
   prodController.addStatement
 ); // Добавление информации о пользователе и товаре
+
+productRouter.delete("/deleteProduct");
 export default productRouter;
