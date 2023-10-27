@@ -8,13 +8,13 @@ function NewsItem({ news }) {
       </h1>
       <div className="flex justify-around mt-2">
         <p className="">{news.latestActions.userName}</p>
-        <p>
+        <div>
           {news.latestActions.type === "ADD" ? (
             <p className="text-green-600">{"Добавлен"}</p>
           ) : (
             <p className="text-red-500">{"Выписан"}</p>
           )}
-        </p>
+        </div>
         <p>{news.latestActions.date}</p>
       </div>
     </div>

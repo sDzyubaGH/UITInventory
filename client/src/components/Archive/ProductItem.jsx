@@ -6,7 +6,7 @@ function ProductItem({ prodItem }) {
       <h1 className="overflow-auto border-b border-b-black max-h-20">
         {prodItem.productName}
       </h1>
-      <div className="flex justify-around mt-2">
+      <div className="flex justify-around my-5">
         <p>{prodItem.customerFullName}</p>
         <p>{prodItem.productQuantity}</p>
         <p>{prodItem.productAddDate}</p>

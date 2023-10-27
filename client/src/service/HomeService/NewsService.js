@@ -23,7 +23,7 @@ export default class NewsService {
 
       return { latestActions };
     });
-    console.log(latestActions);
+    // console.log(latestActions);
     return latestActions;
   }
 }

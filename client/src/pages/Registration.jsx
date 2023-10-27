@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Logo from "../assets/logo-2.jpg";
 import { useNavigate } from "react-router-dom";
 import authAxios from "../service/axios";
+import { useAuth } from "../contexts/AuthContext";
 
 function Registration() {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ function Registration() {
   const [position, setPosition] = useState("");
   const [firstName, setFirstName] = useState("");
   const [success, setSuccess] = useState("");
+  const { setToken } = useAuth();
 
   const handleForm = async (event) => {
     event.preventDefault();
@@ -26,6 +28,7 @@ function Registration() {
         position,
       });
       setSuccess(send.data.message);
+      setToken(send.data.accessToken);
       const iId = setInterval(() => {
         navigate("/info/home");
         clearInterval(iId);
