@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 
 import ArchiveProductList from "../components/DeleteProduct/ArchiveProductList";
 import LastArchiveElementInput from "../components/DeleteProduct/UI/LastArchiveElementInput";
@@ -19,7 +19,7 @@ const DeleteProduct = () => {
   const [inputText, setInputText] = useState("");
 
   const inputTextHandler = async (e) => {
-    var lowerCase = e.target.value.toLowerCase();
+    let lowerCase = e.target.value.toLowerCase();
     if (!lowerCase) {
       return await handleFetchData();
     }
@@ -47,7 +47,7 @@ const DeleteProduct = () => {
           customerFullName: action.user.firstName + " " + action.user.surname,
           name: action.product.name,
           quantity: action.product.quantity,
-          addDate: formattedDate,
+          add_date: formattedDate,
         };
         return archiveProduct;
       });
@@ -69,6 +69,16 @@ const DeleteProduct = () => {
     setProductList(updatedProductList);
   };
 
+  const filteredProductList = productList.filter((product) => {
+    for (const dProduct of dismissProductList) {
+      if (dProduct.id === product.id) {
+        return false;
+      }
+    }
+    return true;
+    // !dismissProductList.some((dismissed) => dismissed.id === product.id)
+  });
+
   useEffect(() => {
     handleFetchData();
   }, []);
@@ -78,12 +88,9 @@ const DeleteProduct = () => {
       <PrintingUI />
       <div className="w-4/5 h-[700px] border-2 border-indigo-500 shadow-lg shadow-indigo-400 bg-white">
         <div className="h-full mx-5 flex flex-col">
-          <LastArchiveElementInput
-            inputTextHandler={inputTextHandler}
-            inputText={inputText}
-          />
+          <LastArchiveElementInput inputTextHandler={inputTextHandler} />
           <ArchiveProductList
-            productList={productList}
+            productList={filteredProductList}
             handleDismissButton={handleDismissButton}
           />
         </div>

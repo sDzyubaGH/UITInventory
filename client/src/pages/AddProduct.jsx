@@ -13,8 +13,6 @@ function AddProduct() {
 
   const { user } = useAuth();
 
-  console.log(user);
-
   const handleInputChange = (id, event) => {
     const { name, value } = event.target;
     const updatedProductList = productList.map((product) => {
@@ -31,14 +29,13 @@ function AddProduct() {
       e.preventDefault();
       setFormLoading(true);
       for (const product of productList) {
-        await authAxios.post("http://localhost:8000/api/product/addProduct", {
+        await authAxios.post("/product/addProduct", {
           name: product.productName,
           quantity: parseInt(product.quantity),
           userId: user.id,
         });
       }
       setProductList([{ id: uuidv4(), productName: "", quantity: "" }]); // Очищаем форму после отправки данных
-      console.log("Product add");
     } catch (error) {
       console.error("Ошибка при отправке", error);
     } finally {
@@ -111,8 +108,11 @@ function AddProduct() {
           </button>
         </div>
         {/* Добавление файла */}
-        {/* <div className="">
-          <label className="cursor-pointer px-4 py-2 bg-white text-indigo-600 border border-indigo-600 rounded ">
+        <div className="mt-5">
+          <label
+            for="file-input"
+            className="cursor-pointer px-4 py-2 bg-white text-indigo-600 border border-indigo-600 rounded "
+          >
             Выберите файл
           </label>
           <input
@@ -121,9 +121,9 @@ function AddProduct() {
             name="file[]"
             multiple
             accept="image/*,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-            className="hidden"
+            // className="hidden"
           />
-        </div> */}
+        </div>
         {/* Отправка формы */}
         <div className="ml-auto mt-20">
           <button
