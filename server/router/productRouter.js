@@ -33,4 +33,10 @@ productRouter.post(
 productRouter.delete("/deleteProduct"),
   authMiddleware,
   prodController.deleteProduct;
+
+productRouter.get(
+  "/searchCustomers",
+  authMiddleware,
+  prodController.searchCustomers
+);
 export default productRouter;

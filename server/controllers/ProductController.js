@@ -124,20 +124,61 @@ class ProductController {
 
       const filteredProducts = fullProduct.filter((ac) => {
         const p = ac.product;
-        if (p.name.toLowerCase().indexOf(name) !== -1) return true;
+        if (p.name.toLowerCase().indexOf(name.toLowerCase()) !== -1)
+          return true;
         else return false;
       });
 
       const result = [];
       for (const ac of filteredProducts) {
+        const toTransform = new Date(ac.product.add_date);
+        const formattedDate = `${toTransform.getUTCDate()}.${
+          toTransform.getUTCMonth() + 1
+        }.${toTransform.getUTCFullYear()}`;
+
         result.push({
           ...ac.product,
+          add_date: formattedDate,
           customerFullName: `${ac.user.firstName} ${ac.user.surname}`,
         });
       }
       return res.status(200).json(result);
     } catch (error) {
       console.error("Ошибка при получении списка товаров:", error);
+      res.status(400).json({ message: "Ошибка" });
+    }
+  }
+
+  async searchCustomers(req, res, next) {
+    const { name } = req.query;
+    try {
+      const fullCustomer = await prisma.actions.findMany({
+        orderBy: { id: "desc" },
+        include: {
+          product: true,
+          user: true,
+        },
+      });
+
+      const filteredCustomers = fullCustomer.filter((ac) => {
+        const customer = ac.user;
+        const customerFullName = `${customer.firstName} ${customer.surname}`;
+
+        if (customerFullName.toLowerCase().includes(name.toLowerCase())) {
+          return true;
+        } else {
+          return false;
+        }
+      });
+
+      const result = filteredCustomers.map((ac) => ({
+        ...ac.product,
+        customerFullName: `${ac.user.firstName} ${ac.user.surname}`,
+      }));
+
+      res.status(200).json(result);
+    } catch (error) {
+      console.error("Ошибка при получении списка пользователей:", error);
       res.status(400).json({ message: "Ошибка" });
     }
   }
