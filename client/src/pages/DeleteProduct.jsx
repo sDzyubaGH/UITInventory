@@ -37,20 +37,7 @@ const DeleteProduct = () => {
       const response = await authAxios.get(
         `/product/allProduct?take=${take}&skip=${skip}`
       );
-      const getArchiveProduct = response.data.map((action) => {
-        const toTransform = new Date(action.product.add_date);
-        const formattedDate = `${toTransform.getUTCDate()}.${
-          toTransform.getUTCMonth() + 1
-        }.${toTransform.getUTCFullYear()}`;
-        const archiveProduct = {
-          id: action.product.id,
-          customerFullName: action.user.firstName + " " + action.user.surname,
-          name: action.product.name,
-          quantity: action.product.quantity,
-          add_date: formattedDate,
-        };
-        return archiveProduct;
-      });
+      const getArchiveProduct = response.data;
       setProductList(getArchiveProduct);
     } catch (error) {
       setError(true);

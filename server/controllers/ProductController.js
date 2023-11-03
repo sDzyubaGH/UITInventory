@@ -56,7 +56,27 @@ class ProductController {
     if (!result.isEmpty()) {
       return res.status(400).json({ errors: result.array() });
     }
-    const { name, quantity, add_date, userId } = req.body;
+
+    if (!req.files) {
+      return res.status(400).json({
+        message: "No file uploaded",
+      });
+    }
+
+    const { productName, quantity, userId, files } = req.body;
+
+    const Type = {
+      INVOICE: "INVOICE",
+      MEMO: "MEMO",
+    };
+
+    console.log(files.file);
+    // if (files.type === Type.INVOICE) {
+    //   type = Type.INVOICE;
+    // } else {
+    //   type = Type.MEMO;
+    // }
+
     try {
       const addProduct = await prisma.product.create({
         data: {
@@ -65,7 +85,13 @@ class ProductController {
               userId: userId,
             },
           },
-          name,
+          // files: {
+          //   create: {
+          //     filepath: filepath,
+          //     type: type,
+          //   },
+          // },
+          name: productName,
           quantity,
           add_date,
         },
@@ -103,7 +129,19 @@ class ProductController {
         },
         orderBy: { id: "desc" },
       });
-      return res.status(200).json(fullProduct);
+
+      const result = fullProduct.map((ac) => {
+        const toTransform = new Date(ac.product.add_date);
+        const formattedDate = `${toTransform.getUTCDate()}.${
+          toTransform.getUTCMonth() + 1
+        }.${toTransform.getUTCFullYear()}`;
+        return {
+          ...ac.product,
+          customerFullName: `${ac.user.firstName} ${ac.user.surname}`,
+          add_date: formattedDate,
+        };
+      });
+      return res.status(200).json(result);
     } catch (error) {
       console.error("Ошибка при получении списка товаров:", error);
       res.status(400).json({ message: "Ошибка" });
@@ -171,10 +209,17 @@ class ProductController {
         }
       });
 
-      const result = filteredCustomers.map((ac) => ({
-        ...ac.product,
-        customerFullName: `${ac.user.firstName} ${ac.user.surname}`,
-      }));
+      const result = filteredCustomers.map((ac) => {
+        const toTransform = new Date(ac.product.add_date);
+        const formattedDate = `${toTransform.getUTCDate()}.${
+          toTransform.getUTCMonth() + 1
+        }.${toTransform.getUTCFullYear()}`;
+        return {
+          ...ac.product,
+          customerFullName: `${ac.user.firstName} ${ac.user.surname}`,
+          add_date: formattedDate,
+        };
+      });
 
       res.status(200).json(result);
     } catch (error) {
@@ -182,6 +227,95 @@ class ProductController {
       res.status(400).json({ message: "Ошибка" });
     }
   }
+
+  async filterDate(req, res, next) {
+    let { startDate, endDate } = req.query;
+
+    const MIN_DATE = new Date("2000-01-01");
+    const MAX_DATE = new Date("3000-01-01");
+
+    let startD = new Date(startDate);
+    let endD = new Date(endDate);
+
+    if (!isDate(startD)) {
+      startD = null;
+    }
+
+    if (!isDate(endD)) {
+      endD = null;
+    }
+
+    // Если даты фильтрации совпадают и полностью захватывает день
+    if (startD && endD) {
+      const [year, month, day] = [
+        endD.getFullYear(),
+        endD.getMonth(),
+        endD.getDate(),
+      ];
+      endD = new Date(year, month, day + 1);
+    }
+    try {
+      const fullProduct = await prisma.actions.findMany({
+        where: {
+          type: "ADD",
+          product: {
+            add_date: {
+              gte: startD || MIN_DATE,
+              lte: endD || MAX_DATE,
+            },
+          },
+        },
+        include: {
+          user: {
+            select: {
+              id: true,
+              firstName: true,
+              surname: true,
+              position: true,
+            },
+          },
+          product: true,
+        },
+        orderBy: { id: "desc" },
+      });
+
+      const result = fullProduct.map((ac) => {
+        const toTransform = new Date(ac.product.add_date);
+        const formattedDate = `${toTransform.getUTCDate()}.${
+          toTransform.getUTCMonth() + 1
+        }.${toTransform.getUTCFullYear()}`;
+        return {
+          ...ac.product,
+          customerFullName: `${ac.user.firstName} ${ac.user.surname}`,
+          add_date: formattedDate,
+        };
+      });
+      return res.status(200).json(result);
+    } catch (error) {
+      console.error("Ошибка при получении списка товаров:", error);
+      res.status(400).json({ message: "Ошибка" });
+    }
+  }
+
+  // async postUploadFile(req, res, next) {
+  //   if (!req.files) {
+  //     return res.status(400).json({
+  //       message: "No file uploaded",
+  //     });
+  //   }
+
+  //   const { filepath, type, files } = req.body;
+
+  //   try {
+  //     const uploadFile = await prisma.file.create({
+  //       data: {
+  //         product: {
+  //           create: {},
+  //         },
+  //       },
+  //     });
+  //   } catch (error) {}
+  // }
 
   async deleteProduct(req, res, next) {
     try {
@@ -193,4 +327,9 @@ class ProductController {
     }
   }
 }
+
+function isDate(date) {
+  return date instanceof Date && !isNaN(date);
+}
+
 export const prodController = new ProductController();

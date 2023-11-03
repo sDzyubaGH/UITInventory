@@ -4,6 +4,15 @@ import { prodController } from "../controllers/ProductController.js";
 import { check } from "express-validator";
 
 const productRouter = new Router();
+// const multer = require("multer");
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     return cb(null, "./public/Images");
+//   },
+//   filename: function (req, file, cb) {
+//     return cb(null, `${Date.now()}`);
+//   },
+// });
 productRouter.post(
   "/addProduct",
   [
@@ -30,9 +39,15 @@ productRouter.post(
   prodController.addStatement
 ); // Добавление информации о пользователе и товаре
 
-productRouter.delete("/deleteProduct"),
+productRouter.delete(
+  "/deleteProduct",
   authMiddleware,
-  prodController.deleteProduct;
+  prodController.deleteProduct
+);
+
+productRouter.get("/filterDate", authMiddleware, prodController.filterDate);
+
+// productRouter.post("/upload", authMiddleware, prodController.postUploadFile);
 
 productRouter.get(
   "/searchCustomers",

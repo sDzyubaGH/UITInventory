@@ -19,6 +19,8 @@ const Archive = () => {
   //Фильтрация
   const [inputSearchProduct, setInputSearchProduct] = useState("");
   const [inputSearchCustomer, setInputSearchCustomer] = useState("");
+  const [dateRange, setDateRange] = useState(["", ""]);
+  const [startDate, endDate] = dateRange;
 
   const handleFetchData = async () => {
     setLoading(true);
@@ -27,30 +29,11 @@ const Archive = () => {
       const response = await authAxios.get(
         `/product/allProduct?take=${take}&skip=${skip}`
       );
-
-      const fetchData = response.data.map((action) => {
-        const toTransform = new Date(action.product.add_date);
-        const formattedDate = `${toTransform.getUTCDate()}.${
-          toTransform.getUTCMonth() + 1
-        }.${toTransform.getUTCFullYear()}`;
-
-        const fullProduct = {
-          id: action.id,
-          customerFullName: action.user.firstName + " " + action.user.surname,
-          name: action.product.name,
-          quantity: action.product.quantity,
-          add_date: formattedDate,
-        };
-
-        console.log(fullProduct);
-
-        return fullProduct;
-      });
-
+      const fullProduct = response.data;
       setTimeout(() => {
-        setHasMore(fetchData.length > 0);
+        setHasMore(fullProduct.length > 0);
         setAllProduct((prevProduct) => {
-          return [...prevProduct, ...fetchData];
+          return [...prevProduct, ...fullProduct];
         });
         setPage((prevPage) => prevPage + 1);
       }, 500);
@@ -88,6 +71,18 @@ const Archive = () => {
     setHasMore(false);
   };
 
+  //Фильтр по дате
+  const handleDateFilter = async (update) => {
+    setDateRange(update);
+    const [startDateTmp, endDateTmp] = update;
+
+    const filteredDate = await authAxios.get(
+      `/product/filterDate?startDate=${startDateTmp}&endDate=${endDateTmp}`
+    );
+    setAllProduct(filteredDate.data);
+    setHasMore(false);
+  };
+
   return (
     <div className="flex justify-center  min-h-screen">
       <div className="flex items-center flex-col border border-white my-10 px-10 rounded-xl min-w-max shadow-2xl shadow-indigo-600 bg-white ">
@@ -97,6 +92,9 @@ const Archive = () => {
           handleSearchCustomer={handleSearchCustomer}
           inputSearchProduct={inputSearchProduct}
           inputSearchCustomer={inputSearchCustomer}
+          startDate={startDate}
+          endDate={endDate}
+          handleDateFilter={handleDateFilter}
         />
 
         <InfiniteScroll
