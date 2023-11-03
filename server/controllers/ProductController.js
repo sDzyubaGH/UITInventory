@@ -57,20 +57,25 @@ class ProductController {
       return res.status(400).json({ errors: result.array() });
     }
 
-    if (!req.files) {
+    console.log(req.file);
+
+    if (!req.file) {
       return res.status(400).json({
         message: "No file uploaded",
       });
     }
 
-    const { productName, quantity, userId, files } = req.body;
+    const { productName, quantity, userId } = req.body;
+    const { file } = req.file;
+
+    console.log(file);
 
     const Type = {
       INVOICE: "INVOICE",
       MEMO: "MEMO",
     };
 
-    console.log(files.file);
+    console.log(file);
     // if (files.type === Type.INVOICE) {
     //   type = Type.INVOICE;
     // } else {

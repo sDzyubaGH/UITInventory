@@ -2,17 +2,20 @@ import { Router } from "express";
 import authMiddleware from "../middleware/authMiddleware.js";
 import { prodController } from "../controllers/ProductController.js";
 import { check } from "express-validator";
+import multer from "multer";
 
 const productRouter = new Router();
-// const multer = require("multer");
-// const storage = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//     return cb(null, "./public/Images");
-//   },
-//   filename: function (req, file, cb) {
-//     return cb(null, `${Date.now()}`);
-//   },
-// });
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    return cb(null, "../public/Images");
+  },
+  filename: function (req, file, cb) {
+    return cb(null, `${Date.now()}`);
+  },
+});
+
+const upload = multer({ storage });
+
 productRouter.post(
   "/addProduct",
   [
@@ -20,6 +23,7 @@ productRouter.post(
     check("quantity", "Это поле не может быть пустым").notEmpty(),
   ],
   authMiddleware,
+  upload.single("file"),
   prodController.postProduct
 ); // Добавление товара
 productRouter.get("/allProduct", authMiddleware, prodController.getFullProduct); //Получение всех товаров на складе

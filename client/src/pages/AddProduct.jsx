@@ -9,7 +9,7 @@ import FileProduct from "../components/AddProduct/FileProduct";
 
 function AddProduct() {
   const [productList, setProductList] = useState([
-    { id: uuidv4(), productName: "", quantity: "", files: "" },
+    { id: uuidv4(), productName: "", quantity: "" },
   ]);
   const [formLoading, setFormLoading] = useState(false);
 
@@ -32,22 +32,17 @@ function AddProduct() {
       e.preventDefault();
       setFormLoading(true);
       const formData = new FormData();
-      formData.append("files", selectedFiles);
-      console.log(selectedFiles);
+      formData.append("file", selectedFiles);
 
       for (const product of productList) {
         await authAxios.post("/product/addProduct", {
           productName: product.productName,
           quantity: parseInt(product.quantity),
           userId: user.id,
-          selectedFiles: {
-            "Content-Type": selectedFiles.type,
-          },
+          formData,
         });
       }
-      setProductList([
-        { id: uuidv4(), productName: "", quantity: "", files: "" },
-      ]); // Очищаем форму после отправки данных
+      setProductList([{ id: uuidv4(), productName: "", quantity: "" }]); // Очищаем форму после отправки данных
     } catch (error) {
       console.error("Ошибка при отправке", error);
     } finally {
