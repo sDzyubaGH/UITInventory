@@ -52,55 +52,64 @@ class ProductController {
   }
 
   async postProduct(req, res, next) {
-    const result = validationResult(req);
-    if (!result.isEmpty()) {
-      return res.status(400).json({ errors: result.array() });
+    let { products } = req.body;
+    const { files } = req;
+
+    if (!products) {
+      // ...
+      return res.status(400);
     }
 
-    console.log(req.file);
+    products = JSON.parse(products);
 
-    if (!req.file) {
-      return res.status(400).json({
-        message: "No file uploaded",
-      });
-    }
-
-    const { productName, quantity, userId } = req.body;
-    const { file } = req.file;
-
-    console.log(file);
+    return;
 
     const Type = {
       INVOICE: "INVOICE",
       MEMO: "MEMO",
     };
 
-    console.log(file);
-    // if (files.type === Type.INVOICE) {
-    //   type = Type.INVOICE;
-    // } else {
-    //   type = Type.MEMO;
-    // }
+    if (!productName && !quantity) {
+      return res.status(400).json({ message: `${!productName}` });
+    }
+
+    if (!files) {
+      return res.status(400).json({
+        message: "No file uploaded",
+      });
+    }
+
+    const filePath = files.map((item) => {
+      return item.path;
+    });
 
     try {
       const addProduct = await prisma.product.create({
         data: {
           users: {
             create: {
-              userId: userId,
+              userId: parseInt(userId),
             },
           },
-          // files: {
-          //   create: {
-          //     filepath: filepath,
-          //     type: type,
-          //   },
-          // },
+          files: {
+            create: {
+              filepath: filePath.join(";"),
+              type: Type.INVOICE,
+            },
+          },
           name: productName,
-          quantity,
-          add_date,
+          quantity: parseInt(quantity),
         },
       });
+
+      // const f = await prisma.file.create({
+      //   data: {
+      //     filepath: filePath.join(";"),
+      //     type: Type.INVOICE,
+      //     product: { connect: { id: addProduct.id } },
+      //   },
+      // });
+
       res.status(200).json({
         message: `Товар добавлен на склад`,
         addProduct,

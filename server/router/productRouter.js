@@ -3,14 +3,25 @@ import authMiddleware from "../middleware/authMiddleware.js";
 import { prodController } from "../controllers/ProductController.js";
 import { check } from "express-validator";
 import multer from "multer";
+import "dotenv/config";
+import { prisma } from "../service/prisma.js";
+import path from "path";
+import fs from "fs";
 
 const productRouter = new Router();
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    return cb(null, "../public/Images");
+  destination: async function (req, file, cb) {
+    const filePath = path.join(
+      `${process.env.FILES_PATH}`,
+      new Date().getTime().toString()
+    );
+
+    if (!fs.existsSync(filePath)) fs.mkdirSync(filePath);
+
+    return cb(null, filePath);
   },
   filename: function (req, file, cb) {
-    return cb(null, `${Date.now()}`);
+    return cb(null, file.originalname);
   },
 });
 
@@ -18,12 +29,12 @@ const upload = multer({ storage });
 
 productRouter.post(
   "/addProduct",
-  [
-    check("name", "Это поле не может быть пустым").notEmpty(),
-    check("quantity", "Это поле не может быть пустым").notEmpty(),
-  ],
+  // [
+  //   check("productName", "Это поле не может быть пустым").notEmpty(),
+  //   check("quantity", "Это поле не может быть пустым").notEmpty(),
+  // ],
   authMiddleware,
-  upload.single("file"),
+  upload.array("files", 3),
   prodController.postProduct
 ); // Добавление товара
 productRouter.get("/allProduct", authMiddleware, prodController.getFullProduct); //Получение всех товаров на складе
