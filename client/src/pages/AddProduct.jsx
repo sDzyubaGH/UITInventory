@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import authAxios from "../service/axios";
 import TableListElement from "../components/AddProduct/TableListElement";
@@ -30,18 +30,45 @@ function AddProduct() {
   const handleFormSumbit = async (e) => {
     try {
       e.preventDefault();
-      setFormLoading(true);
-      const formData = new FormData();
-      formData.append("file", selectedFiles);
 
-      for (const product of productList) {
-        await authAxios.post("/product/addProduct", {
-          productName: product.productName,
-          quantity: parseInt(product.quantity),
-          userId: user.id,
-          formData,
-        });
+      setFormLoading(true);
+
+      const products = JSON.stringify(
+        productList.map((p) => ({
+          productName: p.productName,
+          quantity: p.quantity,
+        }))
+      );
+      console.log(products);
+      const formData = new FormData();
+
+      formData.append("products", products);
+      for (const file of selectedFiles) {
+        formData.append("files", file);
       }
+
+      console.log(formData);
+
+      await authAxios.post("/product/addProduct", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      // for (const product of productList) {
+      //   const formData = new FormData();
+      //   formData.append("productName", product.productName);
+      //   formData.append("quantity", parseInt(product.quantity));
+      //   formData.append("userId", user.id);
+      //   for (const file of selectedFiles) {
+      //     formData.append("files", file);
+      //   }
+      //   await authAxios.post("/product/addProduct", formData, {
+      //     headers: {
+      //       "Content-Type": "multipart/form-data",
+      //     },
+      //   });
+      // }
       setProductList([{ id: uuidv4(), productName: "", quantity: "" }]); // Очищаем форму после отправки данных
     } catch (error) {
       console.error("Ошибка при отправке", error);
@@ -75,7 +102,7 @@ function AddProduct() {
 
   const handleChange = (e) => {
     console.log(e.target.files);
-    setSelectedFiles(e.target.files[0]);
+    setSelectedFiles(e.target.files);
   };
 
   return (
@@ -101,7 +128,10 @@ function AddProduct() {
           handleDeleteProductField={handleDeleteProductField}
         />
         {/* Добавление файла */}
-        <FileProduct handleChange={handleChange} />
+        <FileProduct
+          handleChange={handleChange}
+          selectedFiles={selectedFiles}
+        />
         {/* Отправка формы */}
         <div className="ml-auto">
           <button

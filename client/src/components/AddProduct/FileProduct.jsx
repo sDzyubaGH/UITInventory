@@ -13,7 +13,7 @@ function FileProduct({ handleChange }) {
         onChange={handleChange}
         id="file-input"
         type="file"
-        // multiple
+        multiple
         accept="image/*,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         className="hidden"
       />
