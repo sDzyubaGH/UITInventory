@@ -1,6 +1,8 @@
 import React from "react";
 
-function FileProduct({ handleChange }) {
+function FileProduct({ handleChange, selectedFiles }) {
+  console.log(selectedFiles);
+
   return (
     <div className="mt-20 ml-5 max-w-fit">
       <label
@@ -17,6 +19,12 @@ function FileProduct({ handleChange }) {
         accept="image/*,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         className="hidden"
       />
+
+      {selectedFiles && (
+        <div>
+          <h2></h2>
+        </div>
+      )}
     </div>
   );
 }

@@ -12,80 +12,43 @@ function AddProduct() {
     { id: uuidv4(), productName: "", quantity: "" },
   ]);
   const [formLoading, setFormLoading] = useState(false);
-
-  const { user } = useAuth();
   const [selectedFiles, setSelectedFiles] = useState(null);
-
-  const handleInputChange = (id, event) => {
-    const { name, value } = event.target;
-    const updatedProductList = productList.map((product) => {
-      if (product.id === id) {
-        return { ...product, [name]: value };
-      }
-      return product;
-    });
-    setProductList(updatedProductList);
-  };
+  const { user } = useAuth();
 
   const handleFormSumbit = async (e) => {
     try {
       e.preventDefault();
-
+      for (const product of productList) {
+        if (!product.productName.trim() || !product.quantity.trim()) {
+          return alert("поля не заполнены");
+        }
+      }
       setFormLoading(true);
-
       const products = JSON.stringify(
         productList.map((p) => ({
           productName: p.productName,
           quantity: p.quantity,
+          userId: user.id,
         }))
       );
-      console.log(products);
-      const formData = new FormData();
 
+      const formData = new FormData();
       formData.append("products", products);
       for (const file of selectedFiles) {
         formData.append("files", file);
       }
-
-      console.log(formData);
-
       await authAxios.post("/product/addProduct", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
 
-      // for (const product of productList) {
-      //   const formData = new FormData();
-      //   formData.append("productName", product.productName);
-      //   formData.append("quantity", parseInt(product.quantity));
-      //   formData.append("userId", user.id);
-      //   for (const file of selectedFiles) {
-      //     formData.append("files", file);
-      //   }
-      //   await authAxios.post("/product/addProduct", formData, {
-      //     headers: {
-      //       "Content-Type": "multipart/form-data",
-      //     },
-      //   });
-      // }
       setProductList([{ id: uuidv4(), productName: "", quantity: "" }]); // Очищаем форму после отправки данных
     } catch (error) {
       console.error("Ошибка при отправке", error);
     } finally {
       setFormLoading(false);
     }
-  };
-
-  const handleAddProductField = () => {
-    setProductList([
-      ...productList,
-      { id: uuidv4(), productName: "", quantity: "" },
-    ]);
-  };
-
-  const handleDeleteProductField = (id) => {
-    setProductList([{ productName: "", quantity: "" }]); // Удаление из массива
   };
 
   const deleteProduct = (id) => {
@@ -101,8 +64,29 @@ function AddProduct() {
   };
 
   const handleChange = (e) => {
-    console.log(e.target.files);
     setSelectedFiles(e.target.files);
+  };
+
+  const handleAddProductField = () => {
+    setProductList([
+      ...productList,
+      { id: uuidv4(), productName: "", quantity: "" },
+    ]);
+  };
+
+  const handleDeleteProductField = (id) => {
+    setProductList([{ productName: "", quantity: "" }]); // Удаление из массива
+  };
+
+  const handleInputChange = (id, event) => {
+    const { name, value } = event.target;
+    const updatedProductList = productList.map((product) => {
+      if (product.id === id) {
+        return { ...product, [name]: value };
+      }
+      return product;
+    });
+    setProductList(updatedProductList);
   };
 
   return (
