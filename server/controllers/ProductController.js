@@ -62,16 +62,12 @@ class ProductController {
 
     products = JSON.parse(products);
 
-    return;
+    console.log(products);
 
     const Type = {
       INVOICE: "INVOICE",
       MEMO: "MEMO",
     };
-
-    if (!productName && !quantity) {
-      return res.status(400).json({ message: `${!productName}` });
-    }
 
     if (!files) {
       return res.status(400).json({
@@ -84,35 +80,27 @@ class ProductController {
     });
 
     try {
-      const addProduct = await prisma.product.create({
-        data: {
-          users: {
-            create: {
-              userId: parseInt(userId),
+      for (const product of products) {
+        const addProduct = await prisma.product.create({
+          data: {
+            users: {
+              create: {
+                userId: product.userId,
+              },
             },
-          },
-          files: {
-            create: {
-              filepath: filePath.join(";"),
-              type: Type.INVOICE,
+            files: {
+              create: {
+                filepath: filePath.join(";"),
+                type: Type.INVOICE,
+              },
             },
+            name: product.productName,
+            quantity: parseInt(product.quantity),
           },
-          name: productName,
-          quantity: parseInt(quantity),
-        },
-      });
-
-      // const f = await prisma.file.create({
-      //   data: {
-      //     filepath: filePath.join(";"),
-      //     type: Type.INVOICE,
-      //     product: { connect: { id: addProduct.id } },
-      //   },
-      // });
-
+        });
+      }
       res.status(200).json({
-        message: `Товар добавлен на склад`,
-        addProduct,
+        message: `Товары добавлены на склад`,
       });
     } catch (error) {
       console.log("error", error);
@@ -310,26 +298,6 @@ class ProductController {
       res.status(400).json({ message: "Ошибка" });
     }
   }
-
-  // async postUploadFile(req, res, next) {
-  //   if (!req.files) {
-  //     return res.status(400).json({
-  //       message: "No file uploaded",
-  //     });
-  //   }
-
-  //   const { filepath, type, files } = req.body;
-
-  //   try {
-  //     const uploadFile = await prisma.file.create({
-  //       data: {
-  //         product: {
-  //           create: {},
-  //         },
-  //       },
-  //     });
-  //   } catch (error) {}
-  // }
 
   async deleteProduct(req, res, next) {
     try {
