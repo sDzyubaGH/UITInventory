@@ -60,20 +60,17 @@ class ProductController {
       return res.status(400);
     }
 
-    products = JSON.parse(products);
-
-    console.log(products);
-
-    const Type = {
-      INVOICE: "INVOICE",
-      MEMO: "MEMO",
-    };
-
     if (!files) {
       return res.status(400).json({
         message: "No file uploaded",
       });
     }
+    products = JSON.parse(products);
+
+    const Type = {
+      INVOICE: "INVOICE",
+      MEMO: "MEMO",
+    };
 
     const filePath = files.map((item) => {
       return item.path;
