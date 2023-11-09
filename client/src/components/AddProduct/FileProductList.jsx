@@ -1,10 +1,13 @@
 import React from "react";
 
 function FileProduct({ handleChange, selectedFiles }) {
-  console.log(selectedFiles);
+  console.log(typeof selectedFiles);
+  console.log(selectedFiles[0]);
+
+  const files = Object.values(selectedFiles);
 
   return (
-    <div className="mt-20 ml-5 max-w-fit">
+    <div className="mt-8 ml-5 min-w-fit">
       <label
         htmlFor="file-input"
         className="cursor-pointer px-4 py-2 bg-white text-indigo-600 border border-indigo-600 rounded"
@@ -20,11 +23,14 @@ function FileProduct({ handleChange, selectedFiles }) {
         className="hidden"
       />
 
-      {selectedFiles && (
-        <div>
-          <h2></h2>
-        </div>
-      )}
+      <div className="flex flex-col  ">
+        {files.map((file) => (
+          <embed
+            className="mr-5 w-2/3 h-[500px] my-5 "
+            src={URL.createObjectURL(file)}
+          />
+        ))}
+      </div>
     </div>
   );
 }

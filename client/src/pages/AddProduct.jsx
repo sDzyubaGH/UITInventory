@@ -1,18 +1,19 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useState } from "react";
 import authAxios from "../service/axios";
 import TableListElement from "../components/AddProduct/TableListElement";
+import TableButton from "../components/AddProduct/UI/TableButton";
+import FileProductList from "../components/AddProduct/FileProductList";
 import { v4 as uuidv4 } from "uuid";
 import { useAuth } from "../contexts/AuthContext";
-import TableButton from "../components/AddProduct/UI/TableButton";
-import FileProduct from "../components/AddProduct/FileProduct";
 
 function AddProduct() {
   const [productList, setProductList] = useState([
     { id: uuidv4(), productName: "", quantity: "" },
   ]);
   const [formLoading, setFormLoading] = useState(false);
-  const [selectedFiles, setSelectedFiles] = useState(null);
+  const [selectedFiles, setSelectedFiles] = useState("");
+
   const { user } = useAuth();
 
   const handleFormSumbit = async (e) => {
@@ -64,7 +65,8 @@ function AddProduct() {
   };
 
   const handleChange = (e) => {
-    setSelectedFiles(e.target.files);
+    const file = e.target.files;
+    setSelectedFiles(file);
   };
 
   const handleAddProductField = () => {
@@ -89,17 +91,19 @@ function AddProduct() {
     setProductList(updatedProductList);
   };
 
+  useMemo(() => selectedFiles, [handleChange]);
+
   return (
-    <div className="flex justify-center items-center min-h-screen ">
+    <div className="flex justify-center py-20 ">
       <form
-        className="flex flex-col  h-[600px] w-[1378px] border-2 p-5  bg-white rounded-xl shadow-xl shadow-indigo-300"
+        className="flex flex-col w-[1378px] border-2 p-5  bg-white rounded-xl shadow-xl shadow-indigo-300"
         onSubmit={handleFormSumbit}
       >
         <h1 className="text-center mb-6 text-xl font-myFont ">
           Добавить товар на склад
         </h1>
         {/* Элементы Таблицы */}
-        <div className="mt-5 mb-10 w-[1000px] overflow-y-scroll h-[216px] ">
+        <div className="mt-5 mb-10 min-w-full overflow-y-scroll h-[216px] ">
           <TableListElement
             productList={productList}
             handleInputChange={handleInputChange}
@@ -112,12 +116,12 @@ function AddProduct() {
           handleDeleteProductField={handleDeleteProductField}
         />
         {/* Добавление файла */}
-        <FileProduct
+        <FileProductList
           handleChange={handleChange}
           selectedFiles={selectedFiles}
         />
         {/* Отправка формы */}
-        <div className="ml-auto">
+        <div className="ml-auto mt-5">
           <button
             type="submit"
             className=" inline-block rounded bg-indigo-600 px-8 py-3 text-sm font-semibold text-white transition hover:scale-110 hover:shadow-xl focus:outline-none  active:bg-indigo-500"

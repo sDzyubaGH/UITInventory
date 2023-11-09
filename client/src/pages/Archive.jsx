@@ -84,7 +84,7 @@ const Archive = () => {
   };
 
   return (
-    <div className="flex justify-center  min-h-screen">
+    <div className="flex justify-center  min-h-screen ">
       <div className="flex items-center flex-col border border-white my-10 px-10 rounded-xl min-w-max shadow-2xl shadow-indigo-600 bg-white ">
         <h1 className="mt-5 text-2xl font-myFont ">Архив</h1>
         <ArchiveInputs
