@@ -2,7 +2,7 @@ import React from "react";
 
 function PrintingUI() {
   return (
-    <div className="h-[470px] w-[600px] border-2 border-indigo-500 shadow-lg shadow-indigo-400 bg-white">
+    <div className="border-2 border-indigo-500 shadow-lg shadow-indigo-400 bg-white w-full col-span-2 mt-5 ">
       <div>
         <h1 className="text-center font-myFont text-2xl mt-4 ">Печать</h1>
       </div>

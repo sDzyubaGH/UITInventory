@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 
 import ArchiveProductList from "../components/DeleteProduct/ArchiveProductList";
 import LastArchiveElementInput from "../components/DeleteProduct/UI/LastArchiveElementInput";
@@ -11,12 +11,12 @@ const DeleteProduct = () => {
   const [dismissProductList, setDismissProductList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(true);
+  const [inputText, setInputText] = useState("");
 
   let take = 5;
   let skip = 0;
 
   // Поиск
-  const [inputText, setInputText] = useState("");
 
   const inputTextHandler = async (e) => {
     let lowerCase = e.target.value.toLowerCase();
@@ -63,7 +63,6 @@ const DeleteProduct = () => {
       }
     }
     return true;
-    // !dismissProductList.some((dismissed) => dismissed.id === product.id)
   });
 
   useEffect(() => {
@@ -71,9 +70,9 @@ const DeleteProduct = () => {
   }, []);
 
   return (
-    <div className="grid grid-cols-3 gap-4 grid-flow-row items-center h-screen justify-items-center mx-10 ">
-      <PrintingUI />
-      <div className="w-4/5 h-[700px] border-2 border-indigo-500 shadow-lg shadow-indigo-400 bg-white">
+    <div className="grid grid-cols-2  gap-5 place-items-center h-full p-10 px-60 ">
+      {/* <PrintingUI /> */}
+      <div className="w-full h-[700px] border-2 border-indigo-500 shadow-lg shadow-indigo-400 bg-white rounded-lg ">
         <div className="h-full mx-5 flex flex-col">
           <LastArchiveElementInput inputTextHandler={inputTextHandler} />
           <ArchiveProductList
@@ -82,14 +81,15 @@ const DeleteProduct = () => {
           />
         </div>
       </div>
-      <div className=" w-4/5  border-2 border-indigo-500 shadow-lg shadow-indigo-400 bg-white mr-auto">
-        <h1 className="font-myFont text-2xl mt-4 border-b border-gray-400 text-center mx-3">
-          Выписать
-        </h1>
-        <div className="h-[700px] mx-5 flex flex-col">
+      <div className="w-full h-[700px] border-2 border-indigo-500 shadow-lg shadow-indigo-400 bg-white rounded-lg">
+        <div className="mx-5 flex flex-col h-full ">
+          <h1 className="font-myFont text-2xl mt-4 border-b border-gray-400 text-center mx-3">
+            Выписать
+          </h1>
           <DismissProductList dismissProductList={dismissProductList} />
         </div>
       </div>
+      <PrintingUI />
     </div>
   );
 };

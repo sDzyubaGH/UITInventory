@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React from "react";
 import { useState } from "react";
 import authAxios from "../service/axios";
 import TableListElement from "../components/AddProduct/TableListElement";
@@ -13,7 +13,6 @@ function AddProduct() {
   ]);
   const [formLoading, setFormLoading] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState("");
-
   const { user } = useAuth();
 
   const handleFormSumbit = async (e) => {
@@ -45,6 +44,7 @@ function AddProduct() {
       });
 
       setProductList([{ id: uuidv4(), productName: "", quantity: "" }]); // Очищаем форму после отправки данных
+      setSelectedFiles("");
     } catch (error) {
       console.error("Ошибка при отправке", error);
     } finally {
@@ -72,7 +72,7 @@ function AddProduct() {
   const handleAddProductField = () => {
     setProductList([
       ...productList,
-      { id: uuidv4(), productName: "", quantity: "" },
+      { id: uuidv4(), productName: "", quantity: "" }, // Добавление в массив
     ]);
   };
 
@@ -90,8 +90,6 @@ function AddProduct() {
     });
     setProductList(updatedProductList);
   };
-
-  useMemo(() => selectedFiles, [handleChange]);
 
   return (
     <div className="flex justify-center py-20 ">

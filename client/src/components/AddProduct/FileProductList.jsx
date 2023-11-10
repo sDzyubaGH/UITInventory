@@ -1,6 +1,6 @@
 import React from "react";
 
-function FileProduct({ handleChange, selectedFiles }) {
+function FileProductList({ handleChange, selectedFiles }) {
   console.log(typeof selectedFiles);
   console.log(selectedFiles[0]);
 
@@ -35,4 +35,6 @@ function FileProduct({ handleChange, selectedFiles }) {
   );
 }
 
-export default FileProduct;
+export default React.memo(FileProductList, (prevProps, nextProps) => {
+  return prevProps.selectedFiles === nextProps.selectedFiles;
+});
