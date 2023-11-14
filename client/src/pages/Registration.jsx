@@ -5,15 +5,20 @@ import authAxios from "../service/axios";
 import { useAuth } from "../contexts/AuthContext";
 
 function Registration() {
+  const positionList = {
+    admin: "Системный Администратор",
+    prog: "Главный специалист",
+  };
   const navigate = useNavigate();
   const [formLoading, setFormLoading] = useState(false);
   const [error, setError] = useState("");
   const [login, setLogin] = useState("");
   const [password, setPwd] = useState("");
   const [surname, setSurname] = useState("");
-  const [position, setPosition] = useState("");
   const [firstName, setFirstName] = useState("");
   const [success, setSuccess] = useState("");
+  const [position, setPosition] = useState(positionList.prog);
+  const [patronymic, setPatronymic] = useState("");
   const { setToken } = useAuth();
 
   const handleForm = async (event) => {
@@ -26,6 +31,7 @@ function Registration() {
         firstName,
         surname,
         position,
+        patronymic,
       });
       setSuccess(send.data.message);
       setToken(send.data.accessToken);
@@ -47,6 +53,7 @@ function Registration() {
   const handleSurname = (event) => {
     setSurname(event.target.value);
   };
+
   const handlePosition = (event) => {
     setPosition(event.target.value);
   };
@@ -57,6 +64,10 @@ function Registration() {
 
   const handleLogin = (event) => {
     setLogin(event.target.value);
+  };
+
+  const handlePatronymic = (event) => {
+    setPatronymic(event.target.value);
   };
 
   return (
@@ -82,7 +93,7 @@ function Registration() {
           <div>
             <input
               className="block rounded-lg border p-2 px-4 w-full focus:border-blue-400  focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300 "
-              placeholder="Name"
+              placeholder="Имя"
               value={firstName}
               onChange={handleName}
             />
@@ -90,9 +101,17 @@ function Registration() {
           <div>
             <input
               className="block rounded-lg border p-2 px-4 w-full focus:border-blue-400  focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300"
-              placeholder="Surname"
+              placeholder="Фамилия"
               value={surname}
               onChange={handleSurname}
+            />
+          </div>
+          <div>
+            <input
+              className="block rounded-lg border p-2 px-4 w-full focus:border-blue-400  focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300"
+              placeholder="Отчество"
+              value={patronymic}
+              onChange={handlePatronymic}
             />
           </div>
 
@@ -100,13 +119,13 @@ function Registration() {
             <p>
               <select
                 name="list1"
-                className="block rounded-lg border bg-white p-2 px-4 w-full focus:border-blue-400  focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300 text-black "
+                className="block rounded-lg border bg-white font-myFont p-2 px-4 w-full focus:border-blue-400  focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300 text-black "
                 autoFocus
                 value={position}
                 onChange={handlePosition}
               >
-                <option>Главный специалист</option>
-                <option>Системный Администратор</option>
+                <option>{positionList.prog}</option>
+                <option>{positionList.admin}</option>
               </select>
             </p>
           </div>
@@ -114,7 +133,7 @@ function Registration() {
           <div>
             <input
               className="block rounded-lg border p-2 px-4 w-full focus:border-blue-400  focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300"
-              placeholder="Login"
+              placeholder="Логин"
               value={login}
               onChange={handleLogin}
             />
@@ -124,7 +143,7 @@ function Registration() {
             <input
               className="block rounded-lg border p-2 px-4 w-full focus:border-blue-400  focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300"
               type="password"
-              placeholder="Password"
+              placeholder="Пароль"
               value={password}
               onChange={handlePassword}
             />

@@ -1,10 +1,10 @@
 import React from "react";
+import { IoDocument } from "react-icons/io5";
+import { FaRegFilePdf } from "react-icons/fa";
 
 function FileProductList({ handleChange, selectedFiles }) {
-  console.log(typeof selectedFiles);
-  console.log(selectedFiles[0]);
-
   const files = Object.values(selectedFiles);
+  console.log(files);
 
   return (
     <div className="mt-8 ml-5 min-w-fit">
@@ -23,12 +23,19 @@ function FileProductList({ handleChange, selectedFiles }) {
         className="hidden"
       />
 
-      <div className="flex flex-col  ">
-        {files.map((file) => (
-          <embed
-            className="mr-5 w-2/3 h-[500px] my-5 "
-            src={URL.createObjectURL(file)}
-          />
+      <div className="flex flex-col w-full mt-5">
+        {files.map((file, index) => (
+          <a
+            key={index}
+            href={URL.createObjectURL(file)}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <div className="flex items-center mt-2 ">
+              <FaRegFilePdf style={{ width: "35px", height: "35px" }} />
+              <p className="font-myFont">{file.name}</p>
+            </div>
+          </a>
         ))}
       </div>
     </div>

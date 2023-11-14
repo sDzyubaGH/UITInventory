@@ -13,7 +13,8 @@ class AuthController {
           .status(400)
           .json({ message: "Ошибка при регистрации", errors });
       }
-      const { login, password, firstName, surname, position = null } = req.body;
+      const { login, password, firstName, surname, position, patronymic } =
+        req.body;
       const candidate = await prisma.user.findFirst({ where: { login } });
       if (candidate) {
         return res.status(400).json({
@@ -22,12 +23,21 @@ class AuthController {
       }
       const pswdHash = await hash(password, 8);
       const user = await prisma.user.create({
-        data: { login, password: pswdHash, firstName, surname, position },
+        data: {
+          login,
+          password: pswdHash,
+          firstName,
+          surname,
+          position,
+          patronymic,
+        },
       });
       const accessToken = token.generateTokens({
         id: user.id,
         lastName: user.surname,
         firstName: user.firstName,
+        position: user.position,
+        patronymic: user.patronymic,
       });
       res
         .status(200)
@@ -54,6 +64,8 @@ class AuthController {
         id: user.id,
         lastName: user.surname,
         firstName: user.firstName,
+        position: user.position,
+        patronymic: user.patronymic,
       });
 
       return res.status(200).json({ accessToken });

@@ -1,6 +1,10 @@
-import { validationResult } from "express-validator";
 import { prisma } from "../service/prisma.js";
 import "dotenv/config.js";
+import Docxtemplater from "docxtemplater";
+import PizZip from "pizzip";
+import fs from "fs/promises";
+import path from "path";
+// import { saveAs } from "file-saver";
 
 class ProductController {
   async getLatestActions(req, res, next) {
@@ -297,8 +301,22 @@ class ProductController {
   }
 
   async deleteProduct(req, res, next) {
+    res.status(400).json({ message: "OK" });
+
+    return;
+    const templatePath = path.resolve(
+      __dirname,
+      "C:/Users/omelchenko/Desktop/shablon.docx"
+    );
     try {
-      const deleteProduct = await prisma.actions.delete({});
+      const content = fs.readFileSync(templatePath, "binary");
+      const zip = new PizZip(content);
+      const doc = new Docxtemplater(zip, {
+        paragraphLoop: true,
+        linebreaks: true,
+      });
+
+      doc.loadZip(content);
       return res.status(200).json({ message: "Товар удален" });
     } catch (error) {
       console.error("Ошибка невозможно удалить", error);
@@ -312,3 +330,11 @@ function isDate(date) {
 }
 
 export const prodController = new ProductController();
+
+// async generateDocx(req, res, next) {
+//   try {
+
+//   } catch (error) {
+
+//   }
+// }

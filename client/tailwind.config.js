@@ -9,6 +9,9 @@ export default {
       fontFamily: {
         myFont: ["Geologica", "Play", "Roboto"],
       },
+      screens: {
+        uw: "2900px",
+      },
     },
   },
   plugins: [require("tailwindcss-animated")],

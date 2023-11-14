@@ -93,10 +93,7 @@ function AddProduct() {
 
   return (
     <div className="flex justify-center py-20 ">
-      <form
-        className="flex flex-col w-[1378px] border-2 p-5  bg-white rounded-xl shadow-xl shadow-indigo-300"
-        onSubmit={handleFormSumbit}
-      >
+      <form className="flex flex-col w-[1378px] border-2 p-5  bg-white rounded-xl shadow-xl shadow-indigo-300">
         <h1 className="text-center mb-6 text-xl font-myFont ">
           Добавить товар на склад
         </h1>

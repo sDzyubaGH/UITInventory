@@ -1,45 +1,70 @@
 import React from "react";
+import Select from "react-select";
 
-function PrintingUI() {
+function PrintingUI({
+  handleRoomNumber,
+  handleCustomer,
+  customer,
+  roomNumber,
+  handleSelectedEmployees,
+  options,
+  selectEmployee,
+  handleFormSumbit,
+  isOptionDisabled,
+}) {
   return (
-    <div className="border-2 border-indigo-500 shadow-lg shadow-indigo-400 bg-white w-full col-span-2 mt-5 ">
-      <div>
-        <h1 className="text-center font-myFont text-2xl mt-4 ">Печать</h1>
-      </div>
-      <input
-        type="text"
-        className="mt-10 w-1/2 ml-5 h-10 pl-3 text-md font-myFont rounded-lg border-2 border-black shadow-lg focus:outline-none focus:shadow-orange-500 hover:shadow-orange-500"
-        placeholder="Номер кабинета"
-      />
-      <input
-        type="text"
-        className="mt-4 w-1/2 ml-5 h-10 pl-3 text-md font-myFont rounded-lg border-2 border-black shadow-lg focus:outline-none focus:shadow-orange-500 hover:shadow-orange-500"
-        placeholder="Сотрудник"
-      />
-      <div className="border-t  border-gray-500 my-3">
-        <h2 className="text-xl font-myFont ml-4 mt-2">Подписанты</h2>
-      </div>
-      <select
-        className="mt-2 w-1/2 ml-5 h-10 pl-3 text-md font-myFont rounded-lg border-2 border-black shadow-lg focus:outline-none  hover:shadow-orange-500 bg-white"
-        placeholder="Сотрудник-1"
-      >
-        <option>Сотрудник</option>
-        <option>Сотрудник</option>
-      </select>
+    <form className="w-9/12 px-10 max-w-4xl  col-span-2 py-5 text-center gap-2 rounded-lg items-center border-2 border-indigo-500 shadow-lg shadow-indigo-400 bg-white min-w-min">
+      <h1 className="text-center font-myFont text-2xl">Печать</h1>
+      <div className="flex flex-wrap justify-center mt-5">
+        <div className="w-1/2">
+          <input
+            type="text"
+            className="h-11 pl-2 mb-2 text-md font-myFont rounded-md border-2 border-black shadow-lg focus:outline-none focus:shadow-orange-500 hover:shadow-orange-500"
+            placeholder="Номер кабинета"
+            value={roomNumber}
+            onChange={handleRoomNumber}
+            required
+          />
+          <input
+            type="text"
+            className="h-11 pl-2 mb-2 text-md font-myFont rounded-md border-2 border-black shadow-lg focus:outline-none focus:shadow-orange-500 hover:shadow-orange-500"
+            onChange={handleCustomer}
+            value={customer}
+            placeholder="Сотрудник"
+          />
+        </div>
 
-      <select
-        className="mt-3 w-1/2 ml-5 h-10 pl-3 text-md font-myFont rounded-lg border-2 border-black shadow-lg focus:outline-none  hover:shadow-orange-500 bg-white"
-        placeholder="Сотрудник-1"
-      >
-        <option>Сотрудник</option>
-        <option>Сотрудник</option>
-      </select>
-      <div className="mt-10 text-center mx-24">
-        <button className="w-full border-2 border-indigo-600 shadow-indigo-600 bg-orange-500 text-white hover:bg-orange-600 active:bg-orange-400 h-12 rounded-xl text-lg font-myFont shadow-lg focus:outline-none ">
+        <div className="w-1/2 px-2 ">
+          <Select
+            isMulti
+            options={options}
+            onChange={handleSelectedEmployees}
+            value={selectEmployee}
+            className="text-lg font-myFont rounded-lg shadow-lg hover:shadow-orange-500"
+            placeholder="Выберите сотрудников"
+            maxMenuHeight={120}
+            isOptionDisabled={isOptionDisabled}
+            isSearchable={true}
+            theme={(theme) => ({
+              ...theme,
+              borderRadius: 0,
+              colors: {
+                ...theme.colors,
+                primary50: "hotpink",
+                primary: "black",
+              },
+            })}
+            required
+          />
+        </div>
+        <button
+          className="w-full mx-20 max-w-3xl mt-5 border-2 border-indigo-600 shadow-indigo-600 bg-orange-500 text-white hover:bg-orange-600 active:bg-orange-400 h-12 rounded-xl text-lg font-myFont shadow-lg focus:outline-none"
+          onClick={handleFormSumbit}
+        >
           Печать
         </button>
       </div>
-    </div>
+    </form>
   );
 }
 
