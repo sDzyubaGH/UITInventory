@@ -4,7 +4,6 @@ import Docxtemplater from "docxtemplater";
 import PizZip from "pizzip";
 import fs from "fs/promises";
 import path from "path";
-// import { saveAs } from "file-saver";
 
 class ProductController {
   async getLatestActions(req, res, next) {
@@ -301,26 +300,75 @@ class ProductController {
   }
 
   async deleteProduct(req, res, next) {
-    res.status(400).json({ message: "OK" });
+    console.log("Request body:", req.body);
+    let { products } = req.body;
+    if (!products) {
+      return res.status(400).json({ message: "No products provided" });
+    }
+    products = JSON.parse(products);
 
-    return;
-    const templatePath = path.resolve(
-      __dirname,
-      "C:/Users/omelchenko/Desktop/shablon.docx"
-    );
     try {
-      const content = fs.readFileSync(templatePath, "binary");
-      const zip = new PizZip(content);
-      const doc = new Docxtemplater(zip, {
-        paragraphLoop: true,
-        linebreaks: true,
-      });
-
-      doc.loadZip(content);
-      return res.status(200).json({ message: "Товар удален" });
+      for (const product of products) {
+        const res = await prisma.product.delete({
+          where: {
+            id: product.productId,
+          },
+        });
+      }
+      return res.status(200).json({ message: "OK" });
     } catch (error) {
-      console.error("Ошибка невозможно удалить", error);
-      req.status(400).json({ message: "Ошибка" });
+      console.error("Ошибка:", error);
+      res.status(400).json({ message: "Ошибка" });
+    }
+
+    // const templatePath = path.resolve(
+    //   __dirname,
+    //   "C:/Users/omelchenko/Desktop/shablon.docx"
+    // );
+    // try {
+    //   const content = fs.readFileSync(templatePath, "binary");
+    //   const zip = new PizZip(content);
+    //   const doc = new Docxtemplater(zip, {
+    //     paragraphLoop: true,
+    //     linebreaks: true,
+    //   });
+
+    //   doc.loadZip(content);
+    //   return res.status(200).json({ message: "Товар удален" });
+    // } catch (error) {
+    //   console.error("Ошибка невозможно удалить", error);
+    //   req.status(400).json({ message: "Ошибка" });
+    // }
+  }
+
+  async getAllCustomers(req, res, next) {
+    try {
+      const allCustomers = await prisma.user.findMany({
+        orderBy: { id: "desc" },
+      });
+      const result = allCustomers.map((user) => {
+        if (!user.patronymic) {
+          const value = `${user.surname} ${user.firstName.slice(0, 1) + "."}`;
+          const label = value;
+          return {
+            value,
+            label,
+          };
+        } else {
+          const value = `${user.surname} ${user.firstName.slice(0, 1)}${
+            "." + user?.patronymic.slice(0, 1) + "."
+          }`;
+          const label = value;
+          return {
+            value,
+            label,
+          };
+        }
+      });
+      res.status(200).json({ message: "Все пользователи", result });
+    } catch (error) {
+      console.error("Ошибка запроса:", error);
+      res.status(500).json({ message: "Произошла ошибка сервера" });
     }
   }
 }

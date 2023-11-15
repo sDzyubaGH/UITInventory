@@ -37,7 +37,12 @@ productRouter.post(
   prodController.addStatement
 ); // Добавление информации о пользователе и товаре
 
-productRouter.post("/delete", authMiddleware, prodController.deleteProduct); // Выписка товаров
+productRouter.post(
+  "/delete",
+  authMiddleware,
+  upload.none(),
+  prodController.deleteProduct
+); // Выписка товаров
 
 productRouter.get("/filterDate", authMiddleware, prodController.filterDate); // Фильтр по дате
 
@@ -47,6 +52,10 @@ productRouter.get(
   prodController.searchCustomers
 ); // Поиск по сотрудникам
 
-// productRouter.get("/gen-docx", authMiddleware);
+productRouter.get(
+  "/allCustomers",
+  authMiddleware,
+  prodController.getAllCustomers
+);
 
 export default productRouter;
