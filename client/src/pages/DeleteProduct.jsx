@@ -17,29 +17,23 @@ const DeleteProduct = () => {
   const [customer, setCustomer] = useState("");
   const [inputText, setInputText] = useState("");
   const [selectEmployee, setSelectEmployee] = useState([]);
-  const options = [
-    {
-      value: "Омельченко С.А.",
-      label: "Омельченко С.А.",
-    },
-    {
-      value: "Дзюба С.А.",
-      label: "Дзюба С.А.",
-    },
-    {
-      value: "Созыкин И.М.",
-      label: "Созыкин И.М.",
-    },
-    {
-      value: "Ботвиненко Д.С.",
-      label: "Ботвиненко Д.С.",
-    },
-  ];
+  const [options, setOptions] = useState("");
+  const [isMenuOpen, setIsMenuOpen] = useState(false); // если меню открыто, то запрос
+  const [quantity, setQuantity] = useState(0);
 
   let take = 5;
   let skip = 0;
 
   const { user } = useAuth();
+
+  const handleAllCustomers = async () => {
+    try {
+      const getAllCustomers = await authAxios.get("/product/allCustomers");
+      setOptions(getAllCustomers.data.result);
+    } catch (error) {
+      console.error();
+    }
+  }; // Получение пользователя для select`a
 
   const inputTextHandler = async (e) => {
     let lowerCase = e.target.value.toLowerCase();
@@ -79,6 +73,15 @@ const DeleteProduct = () => {
     setProductList(updatedProductList);
   };
 
+  const handleReturnToArrayButton = (product) => {
+    const idToRemove = product.id;
+    setProductList([...productList, product]);
+    const updatedProductList = dismissProductList.filter(
+      (product) => product.id !== idToRemove
+    );
+    setDismissProductList(updatedProductList);
+  };
+
   const filteredProductList = productList.filter((product) => {
     for (const dProduct of dismissProductList) {
       if (dProduct.id === product.id) {
@@ -90,22 +93,42 @@ const DeleteProduct = () => {
 
   const handleFormSumbit = async (e) => {
     try {
+      console.log(dismissProductList);
       e.preventDefault();
+      if (!roomNumber.trim() || !customer.trim() || !selectEmployee) {
+        return alert("Поля не заполнены");
+      } else if (selectEmployee.length == 1) {
+        return alert("Выберите еще одного сотрудника для подписи");
+      }
+      console.log(quantity);
       setFormLoading(true);
       setError(false);
       const formData = new FormData();
       const products = JSON.stringify(
         dismissProductList.map((product) => ({
-          productName: product.name,
-          quantity: product.quantity,
-          productDate: product.add_date,
-          userId: user.id,
-          roomNumber: roomNumber,
-          customer: customer,
+          productId: product.id,
+          productName: product.name, // название товара
+          quantity: product.quantity, // количество на складе
+          productDate: product.add_date, // дата добавления
+          user: {
+            lastName: user.lastName,
+            firstName: user.firstName,
+            position: user.position,
+            patronymic: user.patronymic,
+          }, // пользователь
+          roomNumber: roomNumber, // номер кабинета, кому выписывается товар
+          customer: customer, // сотрудник которому выписывают товар
+          issuingUsers: selectEmployee, // 2-е подписавшихся
         }))
       );
       formData.append("products", products);
-      await authAxios.post("/product/delete", formData);
+      console.log("Products:", products);
+      await authAxios.post("/product/delete", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      // await authAxios.post("/product/delete", products);
       selectEmployee("");
     } catch (error) {
     } finally {
@@ -131,8 +154,21 @@ const DeleteProduct = () => {
     return selectEmployee.length >= 2 && !selectEmployee.includes(option);
   }; // Ограничение выбора до 2-х сотрудников
 
+  const handleChangeProductQuantity = (id, e) => {
+    const newDissmissProductList = [];
+    for (const dp of dismissProductList) {
+      if (dp.id !== id) newDissmissProductList.push({ ...dp });
+      else newDissmissProductList.push({ ...dp, quantity: e.target.value });
+    }
+    setDismissProductList(newDissmissProductList);
+  };
+
   useEffect(() => {
     handleFetchData();
+  }, []);
+
+  useEffect(() => {
+    handleAllCustomers();
   }, []);
 
   return (
@@ -146,12 +182,16 @@ const DeleteProduct = () => {
           />
         </div>
       </div>
-      <div className="w-full    h-[500px]  border-2 border-indigo-500 shadow-lg shadow-indigo-400 bg-white rounded-lg ">
-        <div className="mx-5 flex flex-col h-full ">
+      <div className="w-full  h-[500px]  border-2 border-indigo-500 shadow-lg shadow-indigo-400 bg-white rounded-lg ">
+        <div className="flex flex-col h-full ">
           <h1 className="font-myFont text-2xl mt-4 border-b border-gray-400 text-center mx-3">
             Выписать
           </h1>
-          <DismissProductList dismissProductList={dismissProductList} />
+          <DismissProductList
+            dismissProductList={dismissProductList}
+            handleReturnToArrayButton={handleReturnToArrayButton}
+            handleChangeProductQuantity={handleChangeProductQuantity}
+          />
         </div>
       </div>
       <PrintingUI

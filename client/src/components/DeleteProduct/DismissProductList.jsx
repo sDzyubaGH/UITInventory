@@ -2,12 +2,22 @@ import React from "react";
 import DismissProductItem from "./DismissProductItem";
 import { BsCardChecklist } from "react-icons/bs";
 
-function DismissProductList({ dismissProductList }) {
+function DismissProductList({
+  dismissProductList,
+  handleReturnToArrayButton,
+  handleChangeProductQuantity,
+  quantity,
+}) {
   return (
-    <div className="flex flex-col mt-5 px-5 gap-y-6 overflow-auto mb-5">
+    <div className="flex flex-col mt-10 px-14 gap-y-6 overflow-auto mb-5">
       {dismissProductList.length ? (
         dismissProductList.map((product) => (
-          <DismissProductItem product={product} key={product.id} />
+          <DismissProductItem
+            product={product}
+            key={product.id}
+            handleReturnToArrayButton={handleReturnToArrayButton}
+            handleChangeProductQuantity={handleChangeProductQuantity}
+          />
         ))
       ) : (
         <div className="text-xl font-myFont">

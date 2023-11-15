@@ -6,7 +6,7 @@ export default function ArchiveProductList({
   handleDismissButton,
 }) {
   return (
-    <div className="flex flex-col mt-14 px-5 gap-y-6 overflow-auto mb-5 ">
+    <div className="flex flex-col mt-12 px-14 gap-y-6 overflow-auto mb-5 ">
       {productList.length ? (
         productList.map((product, id) => (
           <ArchiveProductItem
