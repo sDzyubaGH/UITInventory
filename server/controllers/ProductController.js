@@ -4,7 +4,6 @@ import Docxtemplater from "docxtemplater";
 import PizZip from "pizzip";
 import fs from "fs/promises";
 import path from "path";
-// import { saveAs } from "file-saver";
 
 class ProductController {
   async getLatestActions(req, res, next) {
@@ -59,14 +58,16 @@ class ProductController {
     let { products } = req.body;
     const { files } = req;
 
-    if (!products) {
-      // ...
-      return res.status(400);
+    console.log(products);
+    console.log(!files);
+
+    if (!products.length) {
+      return res.status(400).json({ message: "Добавьте товары" });
     }
 
-    if (!files) {
+    if (!files.length) {
       return res.status(400).json({
-        message: "No file uploaded",
+        message: "Загрузите файл",
       });
     }
     products = JSON.parse(products);
@@ -110,15 +111,25 @@ class ProductController {
   }
 
   async getFullProduct(req, res, next) {
-    const { take, skip } = req.query;
+    const { take, skip, includeZeroQuantity } = req.query;
+
+    const withoutZero = {
+      type: "ADD",
+      product: {},
+    };
+
+    if (includeZeroQuantity === "false") {
+      withoutZero.product.quantity = {
+        not: 0,
+      };
+    } // только для выписки
+
     try {
       const fullProduct = await prisma.actions.findMany({
         take: parseInt(take) || 10,
         skip: parseInt(skip) || 0,
 
-        where: {
-          type: "ADD",
-        },
+        where: withoutZero,
         include: {
           user: {
             select: {
@@ -138,6 +149,7 @@ class ProductController {
         const formattedDate = `${toTransform.getUTCDate()}.${
           toTransform.getUTCMonth() + 1
         }.${toTransform.getUTCFullYear()}`;
+
         return {
           ...ac.product,
           customerFullName: `${ac.user.firstName} ${ac.user.surname}`,
@@ -152,11 +164,23 @@ class ProductController {
   }
 
   async searchProducts(req, res, next) {
-    const { name } = req.query;
+    const { name, includeZeroQuantity } = req.query;
+
+    const withoutZero = {
+      type: "ADD",
+      product: {},
+    };
+
+    if (includeZeroQuantity === "false") {
+      withoutZero.product.quantity = {
+        not: 0,
+      };
+    }
 
     try {
       const fullProduct = await prisma.actions.findMany({
         orderBy: { id: "desc" },
+        where: withoutZero,
         include: {
           product: true,
           user: true,
@@ -301,26 +325,92 @@ class ProductController {
   }
 
   async deleteProduct(req, res, next) {
-    res.status(400).json({ message: "OK" });
+    console.log("Request body:", req.body);
+    let { products } = req.body;
+    if (!products) {
+      return res.status(400).json({ message: "No products provided" });
+    }
 
-    return;
-    const templatePath = path.resolve(
-      __dirname,
-      "C:/Users/omelchenko/Desktop/shablon.docx"
-    );
+    products = JSON.parse(products);
+
+    console.log(products);
+
     try {
-      const content = fs.readFileSync(templatePath, "binary");
-      const zip = new PizZip(content);
-      const doc = new Docxtemplater(zip, {
-        paragraphLoop: true,
-        linebreaks: true,
-      });
+      for (const product of products) {
+        const res = await prisma.product.update({
+          where: {
+            id: product.productId,
+          },
+          data: {
+            quantity: { decrement: Number(product.quantity) },
+          },
+        });
+        const createAction = await prisma.actions.create({
+          data: {
+            type: "DISMISS",
+            employee: product.customer,
+            office: product.roomNumber,
+            productId: Number(product.productId),
+            userId: Number(product.user.userId),
+            issuedQuantity: Number(product.quantity),
+          },
+        });
+      }
 
-      doc.loadZip(content);
-      return res.status(200).json({ message: "Товар удален" });
+      return res.status(200).json({ message: "OK" });
     } catch (error) {
-      console.error("Ошибка невозможно удалить", error);
-      req.status(400).json({ message: "Ошибка" });
+      console.error("Ошибка:", error);
+      res.status(400).json({ message: "Ошибка" });
+    }
+
+    // const templatePath = path.resolve(
+    //   __dirname,
+    //   "C:/Users/omelchenko/Desktop/shablon.docx"
+    // );
+    // try {
+    //   const content = fs.readFileSync(templatePath, "binary");
+    //   const zip = new PizZip(content);
+    //   const doc = new Docxtemplater(zip, {
+    //     paragraphLoop: true,
+    //     linebreaks: true,
+    //   });
+
+    //   doc.loadZip(content);
+    //   return res.status(200).json({ message: "Товар удален" });
+    // } catch (error) {
+    //   console.error("Ошибка невозможно удалить", error);
+    //   req.status(400).json({ message: "Ошибка" });
+    // }
+  }
+
+  async getAllCustomers(req, res, next) {
+    try {
+      const allCustomers = await prisma.user.findMany({
+        orderBy: { id: "desc" },
+      });
+      const result = allCustomers.map((user) => {
+        if (!user.patronymic) {
+          const value = `${user.surname} ${user.firstName.slice(0, 1) + "."}`;
+          const label = value;
+          return {
+            value,
+            label,
+          };
+        } else {
+          const value = `${user.surname} ${user.firstName.slice(0, 1)}${
+            "." + user?.patronymic.slice(0, 1) + "."
+          }`;
+          const label = value;
+          return {
+            value,
+            label,
+          };
+        }
+      });
+      res.status(200).json({ message: "Все пользователи", result });
+    } catch (error) {
+      console.error("Ошибка запроса:", error);
+      res.status(500).json({ message: "Произошла ошибка сервера" });
     }
   }
 }

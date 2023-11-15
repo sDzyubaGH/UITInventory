@@ -6,6 +6,7 @@ import PrintingUI from "../components/DeleteProduct/UI/PrintingUI";
 import DismissProductList from "../components/DeleteProduct/DismissProductList";
 import authAxios from "../service/axios";
 import { useAuth } from "../contexts/AuthContext";
+import HomeLoader from "../components/News/UI/HomeLoader";
 
 const DeleteProduct = () => {
   const [productList, setProductList] = useState([{}]);
@@ -23,6 +24,7 @@ const DeleteProduct = () => {
 
   let take = 5;
   let skip = 0;
+  const includeZeroQuantity = false;
 
   const { user } = useAuth();
 
@@ -42,7 +44,7 @@ const DeleteProduct = () => {
     }
     setInputText(lowerCase);
     const searchedProducts = await authAxios.get(
-      `/product/searchProducts?name=${lowerCase}`
+      `/product/searchProducts?name=${lowerCase}&includeZeroQuantity=${includeZeroQuantity}`
     );
     setProductList(searchedProducts.data);
   }; // Поиск
@@ -52,9 +54,10 @@ const DeleteProduct = () => {
     setError(false);
     try {
       const response = await authAxios.get(
-        `/product/allProduct?take=${take}&skip=${skip}`
+        `/product/allProduct?take=${take}&skip=${skip}&includeZeroQuantity=${includeZeroQuantity}`
       );
       const getArchiveProduct = response.data;
+
       setProductList(getArchiveProduct);
     } catch (error) {
       setError(true);
@@ -93,14 +96,12 @@ const DeleteProduct = () => {
 
   const handleFormSumbit = async (e) => {
     try {
-      console.log(dismissProductList);
       e.preventDefault();
       if (!roomNumber.trim() || !customer.trim() || !selectEmployee) {
         return alert("Поля не заполнены");
       } else if (selectEmployee.length == 1) {
         return alert("Выберите еще одного сотрудника для подписи");
       }
-      console.log(quantity);
       setFormLoading(true);
       setError(false);
       const formData = new FormData();
@@ -111,6 +112,7 @@ const DeleteProduct = () => {
           quantity: product.quantity, // количество на складе
           productDate: product.add_date, // дата добавления
           user: {
+            userId: user.id,
             lastName: user.lastName,
             firstName: user.firstName,
             position: user.position,
@@ -122,7 +124,6 @@ const DeleteProduct = () => {
         }))
       );
       formData.append("products", products);
-      console.log("Products:", products);
       await authAxios.post("/product/delete", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -172,39 +173,45 @@ const DeleteProduct = () => {
   }, []);
 
   return (
-    <div className="grid grid-cols-2 gap-5 place-items-center h-full p-10 uw:px-[700px] ">
-      <div className="w-full  h-[500px] border-2 border-indigo-500 shadow-lg shadow-indigo-400 bg-white rounded-lg ">
-        <div className="h-full mx-5 flex flex-col">
-          <LastArchiveElementInput inputTextHandler={inputTextHandler} />
-          <ArchiveProductList
-            productList={filteredProductList}
-            handleDismissButton={handleDismissButton}
+    <div>
+      {!isLoading ? (
+        <div className="grid grid-cols-2 gap-5 place-items-center h-full p-10 uw:px-[700px] ">
+          <div className="w-full  h-[500px] border-2 border-indigo-500 shadow-lg shadow-indigo-400 bg-white rounded-lg ">
+            <div className="h-full mx-5 flex flex-col">
+              <LastArchiveElementInput inputTextHandler={inputTextHandler} />
+              <ArchiveProductList
+                productList={filteredProductList}
+                handleDismissButton={handleDismissButton}
+              />
+            </div>
+          </div>
+          <div className="w-full  h-[500px]  border-2 border-indigo-500 shadow-lg shadow-indigo-400 bg-white rounded-lg ">
+            <div className="flex flex-col h-full ">
+              <h1 className="font-myFont text-2xl mt-4 border-b border-gray-400 text-center mx-3">
+                Выписать
+              </h1>
+              <DismissProductList
+                dismissProductList={dismissProductList}
+                handleReturnToArrayButton={handleReturnToArrayButton}
+                handleChangeProductQuantity={handleChangeProductQuantity}
+              />
+            </div>
+          </div>
+          <PrintingUI
+            handleRoomNumber={handleRoomNumber}
+            handleCustomer={handleCustomer}
+            roomNumber={roomNumber}
+            customer={customer}
+            handleSelectedEmployees={handleSelectedEmployees}
+            options={options}
+            selectEmploye={selectEmployee}
+            isOptionDisabled={isOptionDisabled}
+            handleFormSumbit={handleFormSumbit}
           />
         </div>
-      </div>
-      <div className="w-full  h-[500px]  border-2 border-indigo-500 shadow-lg shadow-indigo-400 bg-white rounded-lg ">
-        <div className="flex flex-col h-full ">
-          <h1 className="font-myFont text-2xl mt-4 border-b border-gray-400 text-center mx-3">
-            Выписать
-          </h1>
-          <DismissProductList
-            dismissProductList={dismissProductList}
-            handleReturnToArrayButton={handleReturnToArrayButton}
-            handleChangeProductQuantity={handleChangeProductQuantity}
-          />
-        </div>
-      </div>
-      <PrintingUI
-        handleRoomNumber={handleRoomNumber}
-        handleCustomer={handleCustomer}
-        roomNumber={roomNumber}
-        customer={customer}
-        handleSelectedEmployees={handleSelectedEmployees}
-        options={options}
-        selectEmploye={selectEmployee}
-        isOptionDisabled={isOptionDisabled}
-        handleFormSumbit={handleFormSumbit}
-      />
+      ) : (
+        <HomeLoader />
+      )}
     </div>
   );
 };

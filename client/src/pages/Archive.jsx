@@ -4,6 +4,7 @@ import ListProductItem from "../components/Archive/ListProductItem";
 import InfiniteScroll from "react-infinite-scroll-component";
 import ArchiveInputs from "../components/Archive/UI/ArchiveInput.jsx";
 import InfiniteScrollLoader from "../components/Archive/UI/InfiInfiniteScrollLoader.jsx";
+import ErrorUI from "../components/Error/ErrorUI.jsx";
 
 const Archive = () => {
   //Оригинальный массив
@@ -21,22 +22,21 @@ const Archive = () => {
   const [inputSearchCustomer, setInputSearchCustomer] = useState("");
   const [dateRange, setDateRange] = useState(["", ""]);
   const [startDate, endDate] = dateRange;
+  const includeZeroQuantity = true;
 
   const handleFetchData = async () => {
     setLoading(true);
     setError(false);
     try {
       const response = await authAxios.get(
-        `/product/allProduct?take=${take}&skip=${skip}`
+        `/product/allProduct?take=${take}&skip=${skip}&includeZeroQuantity=${includeZeroQuantity}`
       );
       const fullProduct = response.data;
-      setTimeout(() => {
-        setHasMore(fullProduct.length > 0);
-        setAllProduct((prevProduct) => {
-          return [...prevProduct, ...fullProduct];
-        });
-        setPage((prevPage) => prevPage + 1);
-      }, 500);
+      setHasMore(fullProduct.length > 0);
+      setAllProduct((prevProduct) => {
+        return [...prevProduct, ...fullProduct];
+      });
+      setPage((prevPage) => prevPage + 1);
     } catch (error) {
       console.error(error);
       setError(true);

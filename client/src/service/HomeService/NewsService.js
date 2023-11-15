@@ -18,6 +18,8 @@ export default class NewsService {
         userName: userInfo.firstName + " " + userInfo.surname,
         product: productInfo.name,
         date: formattedDate,
+        issuedQuantity: action.issuedQuantity,
+        quantity: productInfo.quantity,
         type: action.type,
       };
 

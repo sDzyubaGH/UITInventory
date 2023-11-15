@@ -10,9 +10,19 @@ function NewsItem({ news }) {
         <p className="">{news.latestActions.userName}</p>
         <div>
           {news.latestActions.type === "ADD" ? (
-            <p className="text-green-600">{"Добавлен"}</p>
+            <div>
+              <p className="text-green-600 font-myFont">Добавлено</p>
+              <p className="font-myFont text-center">
+                {news.latestActions.quantity + " шт."}
+              </p>
+            </div>
           ) : (
-            <p className="text-red-500">{"Выписан"}</p>
+            <div>
+              <p className="text-red-500 font-myFont">Выписано</p>
+              <p className="font-myFont text-center">
+                {news.latestActions.issuedQuantity + " шт."}
+              </p>
+            </div>
           )}
         </div>
         <p>{news.latestActions.date}</p>

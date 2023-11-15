@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import NewsItem from "../components/News/NewsItem";
 import NewsService from "../service/HomeService/NewsService.js";
 import Pagination from "../components/Pagination";
 import NewsList from "../components/News/NewsList";
+import HomeLoader from "../components/News/UI/HomeLoader.jsx";
 
 const newsService = new NewsService();
 
@@ -32,20 +32,26 @@ const Home = () => {
 
   return (
     <div>
-      <div>
-        <h1 className="text-center text-2xl font-myFont mt-3">
-          Последние изменения
-        </h1>
-        <div className="flex flex-col items-center">
-          <NewsList currentIndex={currentIndex} />
-          <Pagination
-            newsPerPage={newsPerPage}
-            totalNews={news.length}
-            paginate={paginate}
-            currentPage={currentPage}
-          />
+      {!loading ? (
+        <div>
+          <h1 className="text-center text-2xl font-myFont mt-3">
+            Последние изменения
+          </h1>
+          <div className="flex flex-col items-center">
+            <NewsList currentIndex={currentIndex} />
+            <Pagination
+              newsPerPage={newsPerPage}
+              totalNews={news.length}
+              paginate={paginate}
+              currentPage={currentPage}
+            />
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="flex justify-center items-center h-screen ">
+          <HomeLoader />
+        </div>
+      )}
     </div>
   );
 };
