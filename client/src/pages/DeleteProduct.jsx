@@ -52,6 +52,7 @@ const DeleteProduct = () => {
   const handleFetchData = async () => {
     setIsLoading(true);
     setError(false);
+
     try {
       const response = await authAxios.get(
         `/product/allProduct?take=${take}&skip=${skip}&includeZeroQuantity=${includeZeroQuantity}`
@@ -102,6 +103,7 @@ const DeleteProduct = () => {
       } else if (selectEmployee.length == 1) {
         return alert("Выберите еще одного сотрудника для подписи");
       }
+
       setFormLoading(true);
       setError(false);
       const formData = new FormData();
@@ -124,13 +126,17 @@ const DeleteProduct = () => {
         }))
       );
       formData.append("products", products);
+
       await authAxios.post("/product/delete", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-      // await authAxios.post("/product/delete", products);
-      selectEmployee("");
+      setRoomNumber("");
+      setCustomer("");
+      setOptions("");
+      setSelectEmployee("");
+      setDismissProductList([]);
     } catch (error) {
     } finally {
       setFormLoading(false);

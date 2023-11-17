@@ -7,6 +7,7 @@ import FileProductList from "../components/AddProduct/FileProductList";
 import { v4 as uuidv4 } from "uuid";
 import { useAuth } from "../contexts/AuthContext";
 import HomeLoader from "../components/News/UI/HomeLoader";
+import { IoIosWarning } from "react-icons/io";
 
 function AddProduct() {
   const [productList, setProductList] = useState([
@@ -15,6 +16,7 @@ function AddProduct() {
   const [formLoading, setFormLoading] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState("");
   const [error, setError] = useState(null);
+  const [isMaxFileSize, setIsMaxFileSize] = useState([]);
   const { user } = useAuth();
 
   const handleFormSumbit = async (e) => {
@@ -26,6 +28,13 @@ function AddProduct() {
           return alert("Поля не заполнены");
         }
       }
+
+      for (const file of selectedFiles) {
+        if (file.size > 10 * 1024 * 1024) {
+          return alert("Файл превышает заданный размер");
+        }
+      }
+
       const products = JSON.stringify(
         productList.map((p) => ({
           productName: p.productName,
@@ -33,11 +42,13 @@ function AddProduct() {
           userId: user.id,
         }))
       );
+
       const formData = new FormData();
       formData.append("products", products);
       for (const file of selectedFiles) {
         formData.append("files", file);
       }
+
       const response = await authAxios.post("/product/addProduct", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -67,8 +78,23 @@ function AddProduct() {
   };
 
   const handleChange = (e) => {
-    const file = e.target.files;
-    setSelectedFiles(file);
+    const files = e.target.files;
+    const errors = [];
+
+    for (const file of files) {
+      if (file.size > 10 * 1024 * 1024) {
+        const ERROR_FILE_MESSAGE = `Размер файла ${file.name} не может превышать 10МБ`;
+        errors.push(ERROR_FILE_MESSAGE);
+      }
+
+      if (errors.length > 0) {
+        setIsMaxFileSize(errors);
+        setSelectedFiles([]); // Очищаем selectedFiles, так как есть недопустимые файлы
+      } else {
+        setSelectedFiles(files);
+        setIsMaxFileSize([]);
+      }
+    }
   };
 
   const handleAddProductField = () => {
@@ -118,8 +144,33 @@ function AddProduct() {
           <FileProductList
             handleChange={handleChange}
             selectedFiles={selectedFiles}
+            isMaxFileSize={isMaxFileSize}
           />
-          {error && <p className="text-red-500 m-5">{error}</p>}
+          {isMaxFileSize.length > 0 && (
+            <p className="text-red-500 text-md font-myFont m-auto flex flex-wrap w-1/2 border rounded-lg p-2 border-red-500 ">
+              {isMaxFileSize.map((errorFile, index) => (
+                <div key={index} className="flex items-center">
+                  <IoIosWarning
+                    className="mr-2"
+                    style={{ fontSize: "1.5rem" }}
+                  />
+                  <span key={index}>{errorFile}</span>
+                </div>
+              ))}
+            </p>
+          )}
+
+          {error && (
+            <div className="flex">
+              <p className="text-red-500 m-5 text-md font-myFont border border-red-500 w-1/4 p-2 rounded-lg text-center ">
+                <IoIosWarning
+                  className="absolute "
+                  style={{ fontSize: "1.5rem" }}
+                />
+                {error}
+              </p>
+            </div>
+          )}
 
           {/* Отправка формы */}
           <div className="ml-auto mt-5">
