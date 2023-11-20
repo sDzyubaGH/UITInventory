@@ -24,8 +24,15 @@ function AddProduct() {
       e.preventDefault();
       setFormLoading(true);
       for (const product of productList) {
-        if (!product.productName.trim() || !product.quantity.trim()) {
-          return alert("Поля не заполнены");
+        const quantityValue = product.quantity.trim();
+
+        if (
+          !product.productName.trim() ||
+          !quantityValue ||
+          isNaN(quantityValue) ||
+          parseInt(quantityValue, 10) < 0
+        ) {
+          return alert("Поля не заполнены или введено некорректное количество");
         }
       }
 
@@ -57,6 +64,7 @@ function AddProduct() {
       console.log(response.data.message);
       setProductList([{ id: uuidv4(), productName: "", quantity: "" }]); // Очищаем форму после отправки данных
       setSelectedFiles("");
+      setError("");
     } catch (error) {
       console.error("Ошибка при отправке", error);
       setError(error.response?.data?.message || error.message);
@@ -118,7 +126,6 @@ function AddProduct() {
     });
     setProductList(updatedProductList);
   };
-
   return (
     <div className="flex justify-center py-20 ">
       {!formLoading ? (

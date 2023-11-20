@@ -33,10 +33,11 @@ function TableElement({ product, handleInputChange, deleteProduct }) {
         }}
       />
       <input
-        type="number"
+        className="w-[120px] h-12 border-2 border-gray-300 ml-2 rounded-lg focus:outline-none p-4 hover:border-slate-400"
+        type="text"
+        pattern="^[0-9]+$"
         min="1"
         name="quantity"
-        className="w-[120px] h-12 border-2 border-gray-300 ml-2 rounded-lg focus:outline-none p-4 hover:border-slate-400"
         placeholder="Кол-во"
         value={product.quantity}
         onChange={(event) => {

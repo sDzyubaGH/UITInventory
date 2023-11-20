@@ -6,7 +6,6 @@ function DismissProductList({
   dismissProductList,
   handleReturnToArrayButton,
   handleChangeProductQuantity,
-  quantity,
 }) {
   return (
     <div className="flex flex-col mt-10 px-14 gap-y-6 overflow-auto mb-5">

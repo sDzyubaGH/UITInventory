@@ -20,7 +20,6 @@ const DeleteProduct = () => {
   const [selectEmployee, setSelectEmployee] = useState([]);
   const [options, setOptions] = useState("");
   const [isMenuOpen, setIsMenuOpen] = useState(false); // если меню открыто, то запрос
-  const [quantity, setQuantity] = useState(0);
 
   let take = 5;
   let skip = 0;
@@ -100,8 +99,23 @@ const DeleteProduct = () => {
       e.preventDefault();
       if (!roomNumber.trim() || !customer.trim() || !selectEmployee) {
         return alert("Поля не заполнены");
-      } else if (selectEmployee.length == 1) {
+      } else if (selectEmployee.length < 2) {
         return alert("Выберите еще одного сотрудника для подписи");
+      }
+
+      if (dismissProductList.length === 0) {
+        return alert("Добавьте товары для выписки");
+      }
+
+      for (const product of dismissProductList) {
+        console.log(product.quantity);
+        if (
+          !product.quantity ||
+          isNaN(product.quantity) ||
+          product.quantity <= 0
+        ) {
+          return alert("Введите корректное количество для каждого товара");
+        }
       }
 
       setFormLoading(true);
@@ -161,13 +175,17 @@ const DeleteProduct = () => {
     return selectEmployee.length >= 2 && !selectEmployee.includes(option);
   }; // Ограничение выбора до 2-х сотрудников
 
-  const handleChangeProductQuantity = (id, e) => {
-    const newDissmissProductList = [];
-    for (const dp of dismissProductList) {
-      if (dp.id !== id) newDissmissProductList.push({ ...dp });
-      else newDissmissProductList.push({ ...dp, quantity: e.target.value });
+  const handleChangeProductQuantity = (id, enteredValue) => {
+    if (!parseInt(enteredValue) !== 0) {
+      const newDissmissProductList = [];
+      for (const dp of dismissProductList) {
+        if (dp.id !== id) newDissmissProductList.push({ ...dp });
+        else newDissmissProductList.push({ ...dp, quantity: enteredValue });
+      }
+      setDismissProductList(newDissmissProductList);
+    } else {
+      alert("HAHHAH");
     }
-    setDismissProductList(newDissmissProductList);
   };
 
   useEffect(() => {
