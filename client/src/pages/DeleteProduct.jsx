@@ -19,7 +19,6 @@ const DeleteProduct = () => {
   const [inputText, setInputText] = useState("");
   const [selectEmployee, setSelectEmployee] = useState([]);
   const [options, setOptions] = useState("");
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // если меню открыто, то запрос
 
   let take = 5;
   let skip = 0;
@@ -108,7 +107,6 @@ const DeleteProduct = () => {
       }
 
       for (const product of dismissProductList) {
-        console.log(product.quantity);
         if (
           !product.quantity ||
           isNaN(product.quantity) ||
@@ -129,10 +127,10 @@ const DeleteProduct = () => {
           productDate: product.add_date, // дата добавления
           user: {
             userId: user.id,
-            lastName: user.lastName,
-            firstName: user.firstName,
+            customerFullName: `${user.lastName} ${user.firstName.slice(0, 1)}${
+              "." + user?.patronymic.slice(0, 1) + "."
+            }`,
             position: user.position,
-            patronymic: user.patronymic,
           }, // пользователь
           roomNumber: roomNumber, // номер кабинета, кому выписывается товар
           customer: customer, // сотрудник которому выписывают товар
@@ -148,9 +146,6 @@ const DeleteProduct = () => {
       });
       setRoomNumber("");
       setCustomer("");
-      setOptions("");
-      setSelectEmployee("");
-      setDismissProductList([]);
     } catch (error) {
     } finally {
       setFormLoading(false);
@@ -176,16 +171,12 @@ const DeleteProduct = () => {
   }; // Ограничение выбора до 2-х сотрудников
 
   const handleChangeProductQuantity = (id, enteredValue) => {
-    if (!parseInt(enteredValue) !== 0) {
-      const newDissmissProductList = [];
-      for (const dp of dismissProductList) {
-        if (dp.id !== id) newDissmissProductList.push({ ...dp });
-        else newDissmissProductList.push({ ...dp, quantity: enteredValue });
-      }
-      setDismissProductList(newDissmissProductList);
-    } else {
-      alert("HAHHAH");
+    const newDissmissProductList = [];
+    for (const dp of dismissProductList) {
+      if (dp.id !== id) newDissmissProductList.push({ ...dp });
+      else newDissmissProductList.push({ ...dp, quantity: enteredValue });
     }
+    setDismissProductList(newDissmissProductList);
   };
 
   useEffect(() => {

@@ -2,8 +2,9 @@ import { prisma } from "../service/prisma.js";
 import "dotenv/config.js";
 import Docxtemplater from "docxtemplater";
 import PizZip from "pizzip";
-import fs from "fs/promises";
+import fs from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
 
 class ProductController {
   async getLatestActions(req, res, next) {
@@ -336,8 +337,40 @@ class ProductController {
     console.log(products);
 
     try {
+      // Чтение файла шаблона
+      const __filename = fileURLToPath(import.meta.url);
+      const __dirname = path.dirname(__filename);
+
+      const content = fs.readFileSync(
+        path.resolve(__dirname, process.env.TEMPLATEPATH),
+        "binary"
+      );
+
+      const zip = new PizZip(content);
+      const doc = new Docxtemplater(zip, {
+        paragraphLoop: true,
+        linebreaks: true,
+      });
+
+      // products.map((product) => {
+      //   console.log(product);
+      // });
+      // const fileProductData = {
+      //   products: products.map((product) => ({})),
+      // };
+
+      doc.setData(products);
+      doc.render();
+
+      const buf = doc.getZip().generate({
+        type: "nodebuffer",
+        compression: "DEFLATE",
+      });
+
+      fs.writeFileSync(path.resolve(__dirname, process.env.OUTPUTPATH), buf);
+
       for (const product of products) {
-        const res = await prisma.product.update({
+        await prisma.product.update({
           where: {
             id: product.productId,
           },
@@ -345,7 +378,7 @@ class ProductController {
             quantity: { decrement: Number(product.quantity) },
           },
         });
-        const createAction = await prisma.actions.create({
+        await prisma.actions.create({
           data: {
             type: "DISMISS",
             employee: product.customer,
@@ -356,31 +389,11 @@ class ProductController {
           },
         });
       }
-
       return res.status(200).json({ message: "OK" });
     } catch (error) {
       console.error("Ошибка:", error);
       res.status(400).json({ message: "Ошибка" });
     }
-
-    // const templatePath = path.resolve(
-    //   __dirname,
-    //   "C:/Users/omelchenko/Desktop/shablon.docx"
-    // );
-    // try {
-    //   const content = fs.readFileSync(templatePath, "binary");
-    //   const zip = new PizZip(content);
-    //   const doc = new Docxtemplater(zip, {
-    //     paragraphLoop: true,
-    //     linebreaks: true,
-    //   });
-
-    //   doc.loadZip(content);
-    //   return res.status(200).json({ message: "Товар удален" });
-    // } catch (error) {
-    //   console.error("Ошибка невозможно удалить", error);
-    //   req.status(400).json({ message: "Ошибка" });
-    // }
   }
 
   async getAllCustomers(req, res, next) {
