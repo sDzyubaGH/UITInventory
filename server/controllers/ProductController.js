@@ -59,9 +59,6 @@ class ProductController {
     let { products } = req.body;
     const { files } = req;
 
-    console.log(products);
-    console.log(!files);
-
     if (!products.length) {
       return res.status(400).json({ message: "Добавьте товары" });
     }
@@ -326,25 +323,22 @@ class ProductController {
   }
 
   async deleteProduct(req, res, next) {
-    console.log("Request body:", req.body);
-    let { products } = req.body;
+    let { products, issuingUsers, roomNumber, customer, user } = req.body;
     if (!products) {
       return res.status(400).json({ message: "No products provided" });
     }
 
     products = JSON.parse(products);
-
-    console.log(products);
+    issuingUsers = JSON.parse(issuingUsers);
+    user = JSON.parse(user);
 
     try {
       // Чтение файла шаблона
       const __filename = fileURLToPath(import.meta.url);
       const __dirname = path.dirname(__filename);
 
-      const content = fs.readFileSync(
-        path.resolve(__dirname, process.env.TEMPLATEPATH),
-        "binary"
-      );
+      const contentPath = path.resolve(__dirname, process.env.TEMPLATEPATH);
+      const content = fs.readFileSync(contentPath, "binary");
 
       const zip = new PizZip(content);
       const doc = new Docxtemplater(zip, {
@@ -352,22 +346,36 @@ class ProductController {
         linebreaks: true,
       });
 
-      // products.map((product) => {
-      //   console.log(product);
-      // });
-      // const fileProductData = {
-      //   products: products.map((product) => ({})),
-      // };
-
-      doc.setData(products);
-      doc.render();
+      doc.render({
+        roomNumber,
+        customerName: customer,
+        products,
+        issuingUsers,
+        user,
+      });
 
       const buf = doc.getZip().generate({
         type: "nodebuffer",
         compression: "DEFLATE",
       });
 
-      fs.writeFileSync(path.resolve(__dirname, process.env.OUTPUTPATH), buf);
+      // const filePath = path.resolve(__dirname, process.env.OUTPUTPATH);
+      // fs.writeFileSync(filePath, buf);
+
+      // console.log(filePath);
+
+      const blob = doc.getZip().generate({
+        type: "nodebuffer",
+        mimeType:
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        compression: "DEFLATE",
+      });
+
+      res.setHeader("Content-Disposition", "attachment; filename=output.docx");
+      res.setHeader(
+        "Content-Type",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+      );
 
       for (const product of products) {
         await prisma.product.update({
@@ -384,12 +392,13 @@ class ProductController {
             employee: product.customer,
             office: product.roomNumber,
             productId: Number(product.productId),
-            userId: Number(product.user.userId),
+            userId: Number(user.userId),
             issuedQuantity: Number(product.quantity),
           },
         });
       }
-      return res.status(200).json({ message: "OK" });
+
+      res.end(blob);
     } catch (error) {
       console.error("Ошибка:", error);
       res.status(400).json({ message: "Ошибка" });
@@ -405,18 +414,26 @@ class ProductController {
         if (!user.patronymic) {
           const value = `${user.surname} ${user.firstName.slice(0, 1) + "."}`;
           const label = value;
+          const position = user.position;
+          const userId = user.id;
           return {
             value,
             label,
+            userId,
+            position,
           };
         } else {
           const value = `${user.surname} ${user.firstName.slice(0, 1)}${
             "." + user?.patronymic.slice(0, 1) + "."
           }`;
           const label = value;
+          const userId = user.id;
+          const position = user.position;
           return {
             value,
             label,
+            userId,
+            position,
           };
         }
       });
@@ -433,11 +450,3 @@ function isDate(date) {
 }
 
 export const prodController = new ProductController();
-
-// async generateDocx(req, res, next) {
-//   try {
-
-//   } catch (error) {
-
-//   }
-// }

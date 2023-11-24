@@ -6,14 +6,13 @@ import PrintingUI from "../components/DeleteProduct/UI/PrintingUI";
 import DismissProductList from "../components/DeleteProduct/DismissProductList";
 import authAxios from "../service/axios";
 import { useAuth } from "../contexts/AuthContext";
-import HomeLoader from "../components/News/UI/HomeLoader";
+import ProductDismissAlert from "../components/DeleteProduct/ProductDismissAlert";
 
 const DeleteProduct = () => {
   const [productList, setProductList] = useState([{}]);
   const [dismissProductList, setDismissProductList] = useState([]);
-  const [formLoading, setFormLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(true);
+  const [error, setError] = useState(null);
   const [roomNumber, setRoomNumber] = useState("");
   const [customer, setCustomer] = useState("");
   const [inputText, setInputText] = useState("");
@@ -25,44 +24,67 @@ const DeleteProduct = () => {
   const includeZeroQuantity = false;
 
   const { user } = useAuth();
-
+  // Получение пользователя для select`a
   const handleAllCustomers = async () => {
     try {
       const getAllCustomers = await authAxios.get("/product/allCustomers");
-      setOptions(getAllCustomers.data.result);
+      const filteredCustomers = getAllCustomers.data.result.filter(
+        (customer) => customer.userId !== user.id
+      );
+
+      setOptions(filteredCustomers);
     } catch (error) {
       console.error();
+      setError(true);
     }
-  }; // Получение пользователя для select`a
+  };
 
+  // Поиск
   const inputTextHandler = async (e) => {
-    let lowerCase = e.target.value.toLowerCase();
-    if (!lowerCase) {
-      return await handleFetchData();
+    try {
+      e.preventDefault();
+      setError(false);
+      let lowerCase = e.target.value.toLowerCase();
+      if (!lowerCase) {
+        return await handleFetchData();
+      }
+      setInputText(lowerCase);
+      const searchedProducts = await authAxios.get(
+        `/product/searchProducts?name=${lowerCase}&includeZeroQuantity=${includeZeroQuantity}`
+      );
+      setProductList(searchedProducts.data);
+    } catch (error) {
+      console.error();
+      setError(true);
     }
-    setInputText(lowerCase);
-    const searchedProducts = await authAxios.get(
-      `/product/searchProducts?name=${lowerCase}&includeZeroQuantity=${includeZeroQuantity}`
-    );
-    setProductList(searchedProducts.data);
-  }; // Поиск
+  };
 
   const handleFetchData = async () => {
-    setIsLoading(true);
-    setError(false);
-
     try {
+      setIsLoading(true);
+      setError(false);
       const response = await authAxios.get(
         `/product/allProduct?take=${take}&skip=${skip}&includeZeroQuantity=${includeZeroQuantity}`
       );
       const getArchiveProduct = response.data;
-
       setProductList(getArchiveProduct);
     } catch (error) {
       setError(true);
       console.error(error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const updateProductList = async () => {
+    try {
+      const response = await authAxios.get(
+        `/product/allProduct?take=${take}&skip=${skip}&includeZeroQuantity=${includeZeroQuantity}`
+      );
+      const updatedProductList = response.data;
+      setProductList(updatedProductList);
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -116,39 +138,54 @@ const DeleteProduct = () => {
         }
       }
 
-      setFormLoading(true);
+      setIsLoading(true);
       setError(false);
-      const formData = new FormData();
-      const products = JSON.stringify(
-        dismissProductList.map((product) => ({
-          productId: product.id,
-          productName: product.name, // название товара
-          quantity: product.quantity, // количество на складе
-          productDate: product.add_date, // дата добавления
-          user: {
-            userId: user.id,
-            customerFullName: `${user.lastName} ${user.firstName.slice(0, 1)}${
-              "." + user?.patronymic.slice(0, 1) + "."
-            }`,
-            position: user.position,
-          }, // пользователь
-          roomNumber: roomNumber, // номер кабинета, кому выписывается товар
-          customer: customer, // сотрудник которому выписывают товар
-          issuingUsers: selectEmployee, // 2-е подписавшихся
-        }))
-      );
-      formData.append("products", products);
 
-      await authAxios.post("/product/delete", formData, {
+      const formData = new FormData();
+      const products = dismissProductList.map((product) => ({
+        productId: product.id,
+        productName: product.name, // название товара
+        quantity: product.quantity, // количество на складе
+        productDate: product.add_date, // дата добавления
+      }));
+      const formDataUser = {
+        userId: user.id,
+        customerFullName: `${user.lastName} ${user.firstName.slice(0, 1)}${
+          "." + user?.patronymic.slice(0, 1) + "."
+        }`,
+        position: user.position,
+      }; // пользователь
+
+      formData.append("roomNumber", roomNumber); // roomNumber: roomNumber, // номер кабинета, кому выписывается товар
+      formData.append("customer", customer); // customer: customer, // сотрудник которому выписывают товар
+      formData.append("issuingUsers", JSON.stringify(selectEmployee)); // issuingUsers: selectEmployee, // 2-е подписавшихся
+      formData.append("products", JSON.stringify(products));
+      formData.append("user", JSON.stringify(formDataUser));
+
+      const response = await authAxios.post("/product/delete", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
+        responseType: "blob",
       });
+      // Загрузка файла с сервера
+      const href = window.URL.createObjectURL(response.data);
+      const link = document.createElement("a");
+      link.href = href;
+      link.download = "output.docx";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      //Сброс полей ввода
       setRoomNumber("");
       setCustomer("");
+      setDismissProductList("");
+      await updateProductList();
     } catch (error) {
+      setError(true);
+      console.log(error);
     } finally {
-      setFormLoading(false);
+      setTimeout(() => setIsLoading(false), 3000);
     }
   }; // Отправка данных на сервер для печати
 
@@ -189,43 +226,44 @@ const DeleteProduct = () => {
 
   return (
     <div>
-      {!isLoading ? (
-        <div className="grid grid-cols-2 gap-5 place-items-center h-full p-10 uw:px-[700px] ">
-          <div className="w-full  h-[500px] border-2 border-indigo-500 shadow-lg shadow-indigo-400 bg-white rounded-lg ">
-            <div className="h-full mx-5 flex flex-col">
-              <LastArchiveElementInput inputTextHandler={inputTextHandler} />
-              <ArchiveProductList
-                productList={filteredProductList}
-                handleDismissButton={handleDismissButton}
-              />
-            </div>
+      <div className="grid grid-cols-2 gap-5 place-items-center h-full p-10 uw:px-[700px] ">
+        <div className="w-full  h-[500px] border-2 border-indigo-500 shadow-lg shadow-indigo-400 bg-white rounded-lg ">
+          <div className="h-full mx-5 flex flex-col">
+            <LastArchiveElementInput inputTextHandler={inputTextHandler} />
+            <ArchiveProductList
+              productList={filteredProductList}
+              handleDismissButton={handleDismissButton}
+            />
           </div>
-          <div className="w-full  h-[500px]  border-2 border-indigo-500 shadow-lg shadow-indigo-400 bg-white rounded-lg ">
-            <div className="flex flex-col h-full ">
-              <h1 className="font-myFont text-2xl mt-4 border-b border-gray-400 text-center mx-3">
-                Выписать
-              </h1>
-              <DismissProductList
-                dismissProductList={dismissProductList}
-                handleReturnToArrayButton={handleReturnToArrayButton}
-                handleChangeProductQuantity={handleChangeProductQuantity}
-              />
-            </div>
-          </div>
-          <PrintingUI
-            handleRoomNumber={handleRoomNumber}
-            handleCustomer={handleCustomer}
-            roomNumber={roomNumber}
-            customer={customer}
-            handleSelectedEmployees={handleSelectedEmployees}
-            options={options}
-            selectEmploye={selectEmployee}
-            isOptionDisabled={isOptionDisabled}
-            handleFormSumbit={handleFormSumbit}
-          />
         </div>
-      ) : (
-        <HomeLoader />
+        <div className="w-full  h-[500px]  border-2 border-indigo-500 shadow-lg shadow-indigo-400 bg-white rounded-lg ">
+          <div className="flex flex-col h-full ">
+            <h1 className="font-myFont text-2xl mt-4 border-b border-gray-400 text-center mx-3">
+              Выписать
+            </h1>
+            <DismissProductList
+              dismissProductList={dismissProductList}
+              handleReturnToArrayButton={handleReturnToArrayButton}
+              handleChangeProductQuantity={handleChangeProductQuantity}
+            />
+          </div>
+        </div>
+        <PrintingUI
+          handleRoomNumber={handleRoomNumber}
+          handleCustomer={handleCustomer}
+          roomNumber={roomNumber}
+          customer={customer}
+          handleSelectedEmployees={handleSelectedEmployees}
+          options={options}
+          selectEmploye={selectEmployee}
+          isOptionDisabled={isOptionDisabled}
+          handleFormSumbit={handleFormSumbit}
+        />
+      </div>
+      {isLoading && (
+        <div className="absolute bottom-[60px] left-[20px] animate-fade-up">
+          <ProductDismissAlert />
+        </div>
       )}
     </div>
   );

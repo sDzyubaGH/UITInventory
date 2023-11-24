@@ -3,8 +3,6 @@ import FetchProductService from "./FetchProductService.js";
 export default class NewsService {
   async getLatestNews() {
     const response = await FetchProductService.getLatest();
-
-    console.log(response);
     const latestActions = response.data.latest.map((action) => {
       const productInfo = action.product;
       const userInfo = action.user;
@@ -25,7 +23,6 @@ export default class NewsService {
 
       return { latestActions };
     });
-    // console.log(latestActions);
     return latestActions;
   }
 }

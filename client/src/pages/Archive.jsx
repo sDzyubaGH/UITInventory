@@ -1,10 +1,10 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import authAxios from "../service/axios.js";
 import ListProductItem from "../components/Archive/ListProductItem";
 import InfiniteScroll from "react-infinite-scroll-component";
 import ArchiveInputs from "../components/Archive/UI/ArchiveInput.jsx";
 import InfiniteScrollLoader from "../components/Archive/UI/InfiInfiniteScrollLoader.jsx";
-import ErrorUI from "../components/Error/ErrorUI.jsx";
+import HomeLoader from "../components/News/UI/HomeLoader.jsx";
 
 const Archive = () => {
   //Оригинальный массив
@@ -58,6 +58,7 @@ const Archive = () => {
     );
     setAllProduct(searchedProducts.data);
     setHasMore(false);
+    setLoading(true);
   };
 
   //Поиск сотрудника

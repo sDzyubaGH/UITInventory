@@ -8,13 +8,13 @@ function ProductItem({ prodItem }) {
       </h1>
       <div className="flex justify-around my-5">
         <p>{prodItem.customerFullName}</p>
-        <p>
+        <div>
           {prodItem.quantity === 0 ? (
             <p className="font-myFont text-red-600">Нет в наличии</p>
           ) : (
             prodItem.quantity
           )}
-        </p>
+        </div>
         <p>{prodItem.add_date}</p>
       </div>
     </div>

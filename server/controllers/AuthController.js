@@ -8,6 +8,7 @@ class AuthController {
   async registration(req, res, next) {
     try {
       const errors = validationResult(req);
+
       if (!errors.isEmpty()) {
         return res
           .status(400)
@@ -21,6 +22,27 @@ class AuthController {
           message: `Пользователь с таким логином уже существует`,
         });
       }
+
+      if (password.includes(" ")) {
+        return res
+          .status(400)
+          .json({ message: "Пароль не может содержать пробелы" });
+      }
+
+      if (login.includes(" ")) {
+        return res
+          .status(400)
+          .json({ message: "Логин не может содержать пробелы" });
+      }
+
+      if (!login || login.trim() === "") {
+        return res.status(400).json({ message: "Логин не может быть пустым" });
+      }
+
+      if (!password || password.trim() === "") {
+        return res.status(400).json({ message: "Пароль не может быть пустым" });
+      }
+
       const pswdHash = await hash(password, 8);
       const user = await prisma.user.create({
         data: {
@@ -50,6 +72,25 @@ class AuthController {
   async login(req, res, next) {
     try {
       const { login, password } = req.body;
+      if (password.includes(" ")) {
+        return res
+          .status(400)
+          .json({ message: "Пароль не может содержать пробелы" });
+      }
+
+      if (login.includes(" ")) {
+        return res
+          .status(400)
+          .json({ message: "Логин не может содержать пробелы" });
+      }
+
+      if (!login || login.trim() === "") {
+        return res.status(400).json({ message: "Логин не может быть пустым" });
+      }
+
+      if (!password || password.trim() === "") {
+        return res.status(400).json({ message: "Пароль не может быть пустым" });
+      }
       const user = await prisma.user.findFirst({ where: { login } });
       if (!user) {
         return res
