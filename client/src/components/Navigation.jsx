@@ -12,10 +12,10 @@ function Navigation() {
           <img className="h-10 w-auto sm:h-16" src={Logo} alt="VosLogo" />
         </Link>
         <div className="flex ml-auto">
-          <Link to="info/home">
+          <Link to="/home">
             <h1
               className={`px-2 mx-2 pb-4 mt-6 text-xl  font-semibold ${
-                window.location.pathname === "/info/home"
+                window.location.pathname === "/home"
                   ? "border-b-2 border-indigo-500 text-xl font-semibold text-black "
                   : "hover:border-b-2 border-gray-400 text-gray-500"
               }`}
@@ -23,10 +23,10 @@ function Navigation() {
               Главная
             </h1>
           </Link>
-          <Link to="info/archive">
+          <Link to="/archive">
             <h1
               className={`px-2 mx-2 pb-4 mt-6 text-xl  font-semibold ${
-                window.location.pathname === "/info/archive"
+                window.location.pathname === "/archive"
                   ? "border-b-2 border-indigo-500 text-xl font-semibold text-black "
                   : "hover:border-b-2 border-gray-400 text-gray-500"
               }`}
@@ -34,10 +34,10 @@ function Navigation() {
               Архив
             </h1>
           </Link>
-          <Link to="info/add">
+          <Link to="/add">
             <h1
               className={`px-2 mx-2 pb-4 mt-6 text-xl  font-semibold ${
-                window.location.pathname === "/info/add"
+                window.location.pathname === "/add"
                   ? "border-b-2 border-indigo-500 text-xl font-semibold text-black"
                   : "hover:border-b-2 border-gray-400 text-gray-500"
               }`}
@@ -45,10 +45,10 @@ function Navigation() {
               Внести
             </h1>
           </Link>
-          <Link to="info/delete">
+          <Link to="/delete">
             <h1
               className={`px-2 mx-2 pb-4 mt-6 text-xl  font-semibold ${
-                window.location.pathname === "/info/delete"
+                window.location.pathname === "/delete"
                   ? "border-b-2 border-indigo-500 text-xl font-semibold text-black"
                   : "hover:border-b-2 border-gray-400 text-gray-500 "
               }`}

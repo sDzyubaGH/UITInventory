@@ -20,8 +20,11 @@ const Archive = () => {
   //Фильтрация
   const [inputSearchProduct, setInputSearchProduct] = useState("");
   const [inputSearchCustomer, setInputSearchCustomer] = useState("");
-  const [dateRange, setDateRange] = useState(["", ""]);
-  const [startDate, endDate] = dateRange;
+  // const [dateRange, setDateRange] = useState(["", ""]);
+  // const [startDate, endDate] = dateRange;
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+
   const includeZeroQuantity = true;
 
   const handleFetchData = async () => {
@@ -49,39 +52,83 @@ const Archive = () => {
     handleFetchData();
   }, []);
 
-  //Поиск товара
-  const handleSearchProduct = async (e) => {
-    const product = e.target.value;
-    setInputSearchProduct(product);
-    const searchedProducts = await authAxios.get(
-      `/product/searchProducts?name=${product}`
-    );
-    setAllProduct(searchedProducts.data);
-    setHasMore(false);
-    setLoading(true);
-  };
+  // //Поиск товара
+  // const handleSearchProduct = async (e) => {
+  //   const product = e.target.value;
+  //   setInputSearchProduct(product);
 
-  //Поиск сотрудника
-  const handleSearchCustomer = async (e) => {
-    const customer = e.target.value;
-    setInputSearchCustomer(customer);
-    const searchedCustomers = await authAxios.get(
-      `/product/searchCustomers?name=${customer}`
-    );
-    setAllProduct(searchedCustomers.data);
-    setHasMore(false);
-  };
+  //   const params = new URLSearchParams();
+  //   params.append("product", e.target.value);
+  //   params.append("date", dateRange);
+  //   params.append("employee", inputSearchCustomer);
 
-  //Фильтр по дате
+  //   const searchedProducts = await authAxios.get(
+  //     `/product/searchProducts?${params.toString()}`
+  //   );
+  //   setAllProduct(searchedProducts.data);
+  //   setHasMore(false);
+  //   setLoading(true);
+  // };
+
+  // //Поиск сотрудника
+  // const handleSearchCustomer = async (e) => {
+  //   const customer = e.target.value;
+  //   setInputSearchCustomer(customer);
+  //   const searchedCustomers = await authAxios.get(
+  //     `/product/searchCustomers?name=${customer}`
+  //   );
+  //   setAllProduct(searchedCustomers.data);
+  //   setHasMore(false);
+  // };
+
+  // //Фильтр по дате
+  // const handleDateFilter = async (update) => {
+  //   setDateRange(update);
+  //   const [startDateTmp, endDateTmp] = update;
+  //   const filteredDate = await authAxios.get(
+  //     `/product/filterDate?startDate=${startDateTmp}&endDate=${endDateTmp}`
+  //   );
+  //   setAllProduct(filteredDate.data);
+  //   setHasMore(false);
+  // };
+
   const handleDateFilter = async (update) => {
-    setDateRange(update);
-    const [startDateTmp, endDateTmp] = update;
+    const [start, end] = update;
+    setStartDate(start);
+    setEndDate(end);
+    await handleSearch("date", update);
+  };
 
-    const filteredDate = await authAxios.get(
-      `/product/filterDate?startDate=${startDateTmp}&endDate=${endDateTmp}`
-    );
-    setAllProduct(filteredDate.data);
-    setHasMore(false);
+  const handleSearchCustomer = async (e) => {
+    setInputSearchCustomer(e.target.value);
+    await handleSearch("employee", e.target.value);
+  };
+
+  const handleSearchProduct = async (e) => {
+    setInputSearchProduct(e.target.value);
+    await handleSearch("product", e.target.value);
+  };
+
+  const handleSearch = async (type, value) => {
+    try {
+      const params = new URLSearchParams();
+      params.append("product", type === "product" ? value : inputSearchProduct);
+      params.append(
+        "employee",
+        type === "employee" ? value : inputSearchCustomer
+      );
+      const [startD, endD] = value;
+      params.append("startDate", type === "date" ? startD : startDate);
+      params.append("endDate", type === "date" ? endD : endDate);
+
+      const stringParams = params.toString();
+      const search = await authAxios.get(`/product/search?${stringParams}`);
+
+      setAllProduct(search.data);
+      setHasMore(false);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

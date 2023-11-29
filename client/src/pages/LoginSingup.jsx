@@ -23,7 +23,7 @@ function LoginSingup() {
       const token = send.data.accessToken;
 
       setToken(token);
-      navigate("/info/home");
+      navigate("/home");
     } catch (error) {
       setError(error.response.data.message);
     } finally {
