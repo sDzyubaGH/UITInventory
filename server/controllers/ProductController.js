@@ -223,15 +223,11 @@ class ProductController {
         },
       });
 
+      console.log(fullCustomer);
       const filteredCustomers = fullCustomer.filter((ac) => {
         const customer = ac.user;
         const customerFullName = `${customer.firstName} ${customer.surname}`;
-
-        if (customerFullName.toLowerCase().includes(name.toLowerCase())) {
-          return true;
-        } else {
-          return false;
-        }
+        return customerFullName.toLowerCase().includes(name.toLowerCase());
       });
 
       const result = filteredCustomers.map((ac) => {
@@ -240,7 +236,8 @@ class ProductController {
           toTransform.getUTCMonth() + 1
         }.${toTransform.getUTCFullYear()}`;
         return {
-          ...ac.product,
+          id: ac.id,
+          name: ac.product.name,
           customerFullName: `${ac.user.firstName} ${ac.user.surname}`,
           add_date: formattedDate,
         };
@@ -258,9 +255,6 @@ class ProductController {
 
     const MIN_DATE = new Date("2000-01-01");
     const MAX_DATE = new Date("3000-01-01");
-
-    let startD = new Date(startDate);
-    let endD = new Date(endDate);
 
     if (!isDate(startD)) {
       startD = null;
@@ -359,11 +353,6 @@ class ProductController {
         compression: "DEFLATE",
       });
 
-      // const filePath = path.resolve(__dirname, process.env.OUTPUTPATH);
-      // fs.writeFileSync(filePath, buf);
-
-      // console.log(filePath);
-
       const blob = doc.getZip().generate({
         type: "nodebuffer",
         mimeType:
@@ -441,6 +430,79 @@ class ProductController {
     } catch (error) {
       console.error("Ошибка запроса:", error);
       res.status(500).json({ message: "Произошла ошибка сервера" });
+    }
+  }
+
+  async get(req, res, next) {
+    try {
+      const { product, employee, startDate, endDate } = req.query;
+      console.log();
+      console.log(product);
+      console.log(employee);
+      console.log(startDate);
+      console.log(endDate);
+      console.log();
+
+      const MIN_DATE = new Date("2000-01-01");
+      const MAX_DATE = new Date("3000-01-01");
+      let startD = new Date(startDate);
+      let endD = new Date(endDate);
+      if (!isDate(startD)) {
+        startD = null;
+      }
+      if (!isDate(endD)) {
+        endD = null;
+      }
+      // Если даты фильтрации совпадают и полностью захватывает день
+      if (startD && endD) {
+        const [year, month, day] = [
+          endD.getFullYear(),
+          endD.getMonth(),
+          endD.getDate(),
+        ];
+        endD = new Date(year, month, day + 1);
+      }
+
+      const products = await prisma.product.findMany({
+        where: {
+          AND: [
+            {
+              name: {
+                contains: product || "",
+                mode: "insensitive",
+              },
+            },
+            {
+              add_date: {
+                gte: startD || MIN_DATE,
+                lte: endD || MAX_DATE,
+              },
+            },
+            {
+              users: {
+                some: {
+                  user: {
+                    OR: [
+                      {
+                        firstName: { contains: employee, mode: "insensitive" },
+                      },
+                      {
+                        surname: { contains: employee, mode: "insensitive" },
+                      },
+                    ],
+                  },
+                },
+              },
+            },
+          ],
+        },
+        include: { users: { select: { user: true }, where: { type: "ADD" } } },
+      });
+
+      return res.status(200).json(products);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({});
     }
   }
 }

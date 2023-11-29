@@ -56,6 +56,8 @@ productRouter.get(
   "/allCustomers",
   authMiddleware,
   prodController.getAllCustomers
-);
+); // Все пользователи
+
+productRouter.get("/search", authMiddleware, prodController.get);
 
 export default productRouter;

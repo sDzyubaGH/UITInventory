@@ -12,7 +12,7 @@ app.use(cors());
 
 app.use("/api", indexRouter);
 
-const start = async () => {
+const start = () => {
   try {
     app.listen(PORT, () => {
       console.log(`Server start on port ${PORT}`);
