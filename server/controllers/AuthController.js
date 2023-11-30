@@ -10,12 +10,9 @@ class AuthController {
       const errors = validationResult(req);
 
       if (!errors.isEmpty()) {
-        return res
-          .status(400)
-          .json({ message: "Ошибка при регистрации", errors });
+        return res.status(400).json({ message: "Ошибка при регистрации", errors });
       }
-      const { login, password, firstName, surname, position, patronymic } =
-        req.body;
+      const { login, password, firstName, surname, position, patronymic } = req.body;
       const candidate = await prisma.user.findFirst({ where: { login } });
       if (candidate) {
         return res.status(400).json({
@@ -24,15 +21,11 @@ class AuthController {
       }
 
       if (password.includes(" ")) {
-        return res
-          .status(400)
-          .json({ message: "Пароль не может содержать пробелы" });
+        return res.status(400).json({ message: "Пароль не может содержать пробелы" });
       }
 
       if (login.includes(" ")) {
-        return res
-          .status(400)
-          .json({ message: "Логин не может содержать пробелы" });
+        return res.status(400).json({ message: "Логин не может содержать пробелы" });
       }
 
       if (!login || login.trim() === "") {
@@ -61,9 +54,7 @@ class AuthController {
         position: user.position,
         patronymic: user.patronymic,
       });
-      res
-        .status(200)
-        .send({ message: `Регистрация прошла успешно`, accessToken });
+      res.status(200).send({ message: `Регистрация прошла успешно`, accessToken });
     } catch (error) {
       res.status(500).json({ message: "Ошибка Регистрации" });
     }
@@ -73,15 +64,11 @@ class AuthController {
     try {
       const { login, password } = req.body;
       if (password.includes(" ")) {
-        return res
-          .status(400)
-          .json({ message: "Пароль не может содержать пробелы" });
+        return res.status(400).json({ message: "Пароль не может содержать пробелы" });
       }
 
       if (login.includes(" ")) {
-        return res
-          .status(400)
-          .json({ message: "Логин не может содержать пробелы" });
+        return res.status(400).json({ message: "Логин не может содержать пробелы" });
       }
 
       if (!login || login.trim() === "") {
@@ -93,9 +80,7 @@ class AuthController {
       }
       const user = await prisma.user.findFirst({ where: { login } });
       if (!user) {
-        return res
-          .status(400)
-          .json({ message: `Пользователь ${login} не найден` });
+        return res.status(400).json({ message: `Пользователь ${login} не найден` });
       }
       const validPassword = bcryptjs.compareSync(password, user.password);
       if (!validPassword) {

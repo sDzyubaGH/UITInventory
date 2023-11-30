@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-
 import ArchiveProductList from "../components/DeleteProduct/ArchiveProductList";
 import LastArchiveElementInput from "../components/DeleteProduct/UI/LastArchiveElementInput";
 import PrintingUI from "../components/DeleteProduct/UI/PrintingUI";
@@ -28,9 +27,7 @@ const DeleteProduct = () => {
   const handleAllCustomers = async () => {
     try {
       const getAllCustomers = await authAxios.get("/product/allCustomers");
-      const filteredCustomers = getAllCustomers.data.result.filter(
-        (customer) => customer.userId !== user.id
-      );
+      const filteredCustomers = getAllCustomers.data.result.filter((customer) => customer.userId !== user.id);
 
       setOptions(filteredCustomers);
     } catch (error) {
@@ -91,18 +88,14 @@ const DeleteProduct = () => {
   const handleDismissButton = (product) => {
     const idToRemove = product.id;
     setDismissProductList([...dismissProductList, product]);
-    const updatedProductList = productList.filter(
-      (product) => product.id !== idToRemove
-    );
+    const updatedProductList = productList.filter((product) => product.id !== idToRemove);
     setProductList(updatedProductList);
   };
 
   const handleReturnToArrayButton = (product) => {
     const idToRemove = product.id;
     setProductList([...productList, product]);
-    const updatedProductList = dismissProductList.filter(
-      (product) => product.id !== idToRemove
-    );
+    const updatedProductList = dismissProductList.filter((product) => product.id !== idToRemove);
     setDismissProductList(updatedProductList);
   };
 
@@ -129,11 +122,7 @@ const DeleteProduct = () => {
       }
 
       for (const product of dismissProductList) {
-        if (
-          !product.quantity ||
-          isNaN(product.quantity) ||
-          product.quantity <= 0
-        ) {
+        if (!product.quantity || isNaN(product.quantity) || product.quantity <= 0) {
           return alert("Введите корректное количество для каждого товара");
         }
       }
@@ -150,9 +139,7 @@ const DeleteProduct = () => {
       }));
       const formDataUser = {
         userId: user.id,
-        customerFullName: `${user.lastName} ${user.firstName.slice(0, 1)}${
-          "." + user?.patronymic.slice(0, 1) + "."
-        }`,
+        customerFullName: `${user.lastName} ${user.firstName.slice(0, 1)}${"." + user?.patronymic.slice(0, 1) + "."}`,
         position: user.position,
       }; // пользователь
 
@@ -230,17 +217,12 @@ const DeleteProduct = () => {
         <div className="w-full  h-[500px] border-2 border-indigo-500 shadow-lg shadow-indigo-400 bg-white rounded-lg ">
           <div className="h-full mx-5 flex flex-col">
             <LastArchiveElementInput inputTextHandler={inputTextHandler} />
-            <ArchiveProductList
-              productList={filteredProductList}
-              handleDismissButton={handleDismissButton}
-            />
+            <ArchiveProductList productList={filteredProductList} handleDismissButton={handleDismissButton} />
           </div>
         </div>
         <div className="w-full  h-[500px]  border-2 border-indigo-500 shadow-lg shadow-indigo-400 bg-white rounded-lg ">
           <div className="flex flex-col h-full ">
-            <h1 className="font-myFont text-2xl mt-4 border-b border-gray-400 text-center mx-3">
-              Выписать
-            </h1>
+            <h1 className="font-myFont text-2xl mt-4 border-b border-gray-400 text-center mx-3">Выписать</h1>
             <DismissProductList
               dismissProductList={dismissProductList}
               handleReturnToArrayButton={handleReturnToArrayButton}

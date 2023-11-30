@@ -20,8 +20,6 @@ const Archive = () => {
   //Фильтрация
   const [inputSearchProduct, setInputSearchProduct] = useState("");
   const [inputSearchCustomer, setInputSearchCustomer] = useState("");
-  // const [dateRange, setDateRange] = useState(["", ""]);
-  // const [startDate, endDate] = dateRange;
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
 
@@ -113,10 +111,7 @@ const Archive = () => {
     try {
       const params = new URLSearchParams();
       params.append("product", type === "product" ? value : inputSearchProduct);
-      params.append(
-        "employee",
-        type === "employee" ? value : inputSearchCustomer
-      );
+      params.append("employee", type === "employee" ? value : inputSearchCustomer);
       const [startD, endD] = value;
       params.append("startDate", type === "date" ? startD : startDate);
       params.append("endDate", type === "date" ? endD : endDate);

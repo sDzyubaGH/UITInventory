@@ -2,11 +2,7 @@ import React from "react";
 import DismissProductItem from "./DismissProductItem";
 import { BsCardChecklist } from "react-icons/bs";
 
-function DismissProductList({
-  dismissProductList,
-  handleReturnToArrayButton,
-  handleChangeProductQuantity,
-}) {
+function DismissProductList({ dismissProductList, handleReturnToArrayButton, handleChangeProductQuantity }) {
   return (
     <div className="flex flex-col mt-10 px-14 gap-y-6 overflow-auto mb-5">
       {dismissProductList.length ? (

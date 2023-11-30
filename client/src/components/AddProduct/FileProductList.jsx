@@ -24,12 +24,7 @@ function FileProductList({ handleChange, selectedFiles }) {
         <div className="flex flex-col w-1/2 mt-5 border border-indigo-500 shadow-md rounded-lg p-5">
           <p className="text-lg font-myFont ml-1">Прикрепленные файлы:</p>
           {files.map((file, index) => (
-            <a
-              key={index}
-              href={URL.createObjectURL(file)}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <a key={index} href={URL.createObjectURL(file)} target="_blank" rel="noopener noreferrer">
               <div className="flex items-center mt-2 ">
                 <FaRegFilePdf style={{ width: "35px", height: "35px" }} />
                 <p className="font-myFont">{file.name}</p>

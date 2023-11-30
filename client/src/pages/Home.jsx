@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
-import NewsService from "../service/HomeService/NewsService.js";
 import Pagination from "../components/Pagination";
 import NewsList from "../components/News/NewsList";
 import HomeLoader from "../components/News/UI/HomeLoader.jsx";
-
-const newsService = new NewsService();
+import authAxios from "../service/axios.js";
 
 const Home = () => {
   const [news, setNews] = useState([]);
@@ -19,8 +17,8 @@ const Home = () => {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const latestNews = await newsService.getLatestNews();
-      setNews(latestNews);
+      const latestNews = await authAxios.get("/product/latestAction");
+      setNews(latestNews.data);
       setLoading(false);
     };
     fetchData();
@@ -34,9 +32,7 @@ const Home = () => {
     <div>
       {!loading ? (
         <div>
-          <h1 className="text-center text-2xl font-myFont mt-3">
-            Последние изменения
-          </h1>
+          <h1 className="text-center text-2xl font-myFont mt-3">Последние изменения</h1>
           <div className="flex flex-col items-center">
             <NewsList currentIndex={currentIndex} />
             <Pagination

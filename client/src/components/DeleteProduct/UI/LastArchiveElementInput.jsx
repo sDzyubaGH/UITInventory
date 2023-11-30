@@ -3,9 +3,7 @@ import { IoSearchCircleSharp } from "react-icons/io5";
 function LastArchiveElementInput({ inputTextHandler }) {
   return (
     <div>
-      <h1 className="text-center font-myFont text-2xl mt-4 border-b border-gray-400">
-        Последние добавленные на склад
-      </h1>
+      <h1 className="text-center font-myFont text-2xl mt-4 border-b border-gray-400">Последние добавленные на склад</h1>
       <div className="relative px-2">
         <IoSearchCircleSharp className="absolute top-2 left-3 text-indigo-500 mt-10 text-3xl" />
         <input

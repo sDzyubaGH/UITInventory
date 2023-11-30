@@ -10,9 +10,7 @@ import HomeLoader from "../components/News/UI/HomeLoader";
 import { IoIosWarning } from "react-icons/io";
 
 function AddProduct() {
-  const [productList, setProductList] = useState([
-    { id: uuidv4(), productName: "", quantity: "" },
-  ]);
+  const [productList, setProductList] = useState([{ id: uuidv4(), productName: "", quantity: "" }]);
   const [formLoading, setFormLoading] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState("");
   const [error, setError] = useState(null);
@@ -26,12 +24,7 @@ function AddProduct() {
       for (const product of productList) {
         const quantityValue = product.quantity.trim();
 
-        if (
-          !product.productName.trim() ||
-          !quantityValue ||
-          isNaN(quantityValue) ||
-          parseInt(quantityValue, 10) < 0
-        ) {
+        if (!product.productName.trim() || !quantityValue || isNaN(quantityValue) || parseInt(quantityValue, 10) < 0) {
           return alert("Поля не заполнены или введено некорректное количество");
         }
       }
@@ -130,9 +123,7 @@ function AddProduct() {
     <div className="flex justify-center py-20 ">
       {!formLoading ? (
         <form className="flex flex-col w-[1378px] border-2 p-5  bg-white rounded-xl shadow-xl shadow-indigo-300">
-          <h1 className="text-center mb-6 text-xl font-myFont ">
-            Добавить товар на склад
-          </h1>
+          <h1 className="text-center mb-6 text-xl font-myFont ">Добавить товар на склад</h1>
           {/* Элементы Таблицы */}
           <div className="mt-5 mb-10 min-w-full overflow-y-scroll h-[216px] ">
             <TableListElement
@@ -148,19 +139,12 @@ function AddProduct() {
           />
           {/* Добавление файла */}
 
-          <FileProductList
-            handleChange={handleChange}
-            selectedFiles={selectedFiles}
-            isMaxFileSize={isMaxFileSize}
-          />
+          <FileProductList handleChange={handleChange} selectedFiles={selectedFiles} isMaxFileSize={isMaxFileSize} />
           {isMaxFileSize.length > 0 && (
             <p className="text-red-500 text-md font-myFont m-auto flex flex-wrap w-1/2 border rounded-lg p-2 border-red-500 ">
               {isMaxFileSize.map((errorFile, index) => (
                 <div key={index} className="flex items-center">
-                  <IoIosWarning
-                    className="mr-2"
-                    style={{ fontSize: "1.5rem" }}
-                  />
+                  <IoIosWarning className="mr-2" style={{ fontSize: "1.5rem" }} />
                   <span key={index}>{errorFile}</span>
                 </div>
               ))}
@@ -170,10 +154,7 @@ function AddProduct() {
           {error && (
             <div className="flex">
               <p className="text-red-500 m-5 text-md font-myFont border border-red-500 w-1/4 p-2 rounded-lg text-center ">
-                <IoIosWarning
-                  className="absolute "
-                  style={{ fontSize: "1.5rem" }}
-                />
+                <IoIosWarning className="absolute " style={{ fontSize: "1.5rem" }} />
                 {error}
               </p>
             </div>

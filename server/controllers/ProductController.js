@@ -24,7 +24,7 @@ class ProductController {
         },
         orderBy: { id: "desc" },
       });
-      res.status(200).json({ message: "Последние изменения", latest });
+      res.status(200).json(latest);
     } catch (error) {
       console.error("Ошибка запроса:", error);
       res.status(500).json({ message: "Произошла ошибка сервера" });
@@ -86,6 +86,7 @@ class ProductController {
             users: {
               create: {
                 userId: product.userId,
+                quantity: parseInt(product.quantity),
               },
             },
             files: {
@@ -187,8 +188,7 @@ class ProductController {
 
       const filteredProducts = fullProduct.filter((ac) => {
         const p = ac.product;
-        if (p.name.toLowerCase().indexOf(name.toLowerCase()) !== -1)
-          return true;
+        if (p.name.toLowerCase().indexOf(name.toLowerCase()) !== -1) return true;
         else return false;
       });
 
@@ -266,11 +266,7 @@ class ProductController {
 
     // Если даты фильтрации совпадают и полностью захватывает день
     if (startD && endD) {
-      const [year, month, day] = [
-        endD.getFullYear(),
-        endD.getMonth(),
-        endD.getDate(),
-      ];
+      const [year, month, day] = [endD.getFullYear(), endD.getMonth(), endD.getDate()];
       endD = new Date(year, month, day + 1);
     }
     try {
@@ -355,16 +351,12 @@ class ProductController {
 
       const blob = doc.getZip().generate({
         type: "nodebuffer",
-        mimeType:
-          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         compression: "DEFLATE",
       });
 
       res.setHeader("Content-Disposition", "attachment; filename=output.docx");
-      res.setHeader(
-        "Content-Type",
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-      );
+      res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
 
       for (const product of products) {
         await prisma.product.update({
@@ -382,7 +374,7 @@ class ProductController {
             office: product.roomNumber,
             productId: Number(product.productId),
             userId: Number(user.userId),
-            issuedQuantity: Number(product.quantity),
+            quantity: Number(product.quantity),
           },
         });
       }
@@ -412,9 +404,7 @@ class ProductController {
             position,
           };
         } else {
-          const value = `${user.surname} ${user.firstName.slice(0, 1)}${
-            "." + user?.patronymic.slice(0, 1) + "."
-          }`;
+          const value = `${user.surname} ${user.firstName.slice(0, 1)}${"." + user?.patronymic.slice(0, 1) + "."}`;
           const label = value;
           const userId = user.id;
           const position = user.position;
@@ -436,12 +426,6 @@ class ProductController {
   async get(req, res, next) {
     try {
       const { product, employee, startDate, endDate } = req.query;
-      console.log();
-      console.log(product);
-      console.log(employee);
-      console.log(startDate);
-      console.log(endDate);
-      console.log();
 
       const MIN_DATE = new Date("2000-01-01");
       const MAX_DATE = new Date("3000-01-01");
@@ -455,11 +439,7 @@ class ProductController {
       }
       // Если даты фильтрации совпадают и полностью захватывает день
       if (startD && endD) {
-        const [year, month, day] = [
-          endD.getFullYear(),
-          endD.getMonth(),
-          endD.getDate(),
-        ];
+        const [year, month, day] = [endD.getFullYear(), endD.getMonth(), endD.getDate()];
         endD = new Date(year, month, day + 1);
       }
 
@@ -497,9 +477,30 @@ class ProductController {
           ],
         },
         include: { users: { select: { user: true }, where: { type: "ADD" } } },
+        orderBy: { id: "desc" },
       });
 
-      return res.status(200).json(products);
+      const filterProducts = products.map((product) => {
+        const toTransform = new Date(product.add_date);
+        const formattedDate = `${toTransform.getUTCDate()}.${
+          toTransform.getUTCMonth() + 1
+        }.${toTransform.getUTCFullYear()}`;
+
+        const customerFullName = product.users.map((ar) => {
+          const userFullName = `${ar.user.firstName} ${ar.user.surname}`;
+          return userFullName;
+        });
+
+        return {
+          id: product.id,
+          name: product.name,
+          quantity: product.quantity,
+          add_date: formattedDate,
+          customerFullName: customerFullName,
+        };
+      });
+
+      return res.status(200).json(filterProducts);
     } catch (error) {
       console.log(error);
       return res.status(500).json({});

@@ -17,7 +17,7 @@ function LoginSingup() {
   const handleFormSumbit = async (event) => {
     event.preventDefault(); // предотвращает перезагрузку страницы
     try {
-      setIsLoading(true); // флаг состояния загрузки формы
+      setIsLoading(true); // флаг состояния загрузки формыs
       setError(false);
       const send = await authAxios.post(`/user/login`, { login, password }); // асинхронный запрос
       const token = send.data.accessToken;
@@ -50,17 +50,9 @@ function LoginSingup() {
           <img className="h-8 w-auto sm:h-11" src={Logo} alt="VosLogo" />
         </div>
         <div>
-          <h2 className="mt-0 text-center text-xl font-medium text-gray-600">
-            Welcome
-          </h2>
-          <p className="mt-1 text-center font-medium text-gray-400">
-            Login or Create Account
-          </p>
-          {error && (
-            <p className="mb-2 font-myFont text-red-500 break-all text-center">
-              {error}
-            </p>
-          )}
+          <h2 className="mt-0 text-center text-xl font-medium text-gray-600">Welcome</h2>
+          <p className="mt-1 text-center font-medium text-gray-400">Login or Create Account</p>
+          {error && <p className="mb-2 font-myFont text-red-500 break-all text-center">{error}</p>}
           <form onSubmit={handleFormSumbit} className="mt-5">
             <div>
               <input

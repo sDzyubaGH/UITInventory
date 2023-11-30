@@ -9,9 +9,7 @@ export default function ErrorPage() {
       <div class="text-center">
         <h1 class="font-black text-gray-200 text-9xl">Ошибка</h1>
 
-        <p class="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-          О-нет!
-        </p>
+        <p class="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl">О-нет!</p>
 
         <p class="mt-4 text-gray-500">Мы не можем найти эту страницу</p>
 

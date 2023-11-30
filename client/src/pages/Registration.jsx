@@ -36,7 +36,7 @@ function Registration() {
       setSuccess(send.data.message);
       setToken(send.data.accessToken);
       const iId = setInterval(() => {
-        navigate("/info/home");
+        navigate("/home");
         clearInterval(iId);
       }, 1000);
     } catch (error) {
@@ -72,16 +72,11 @@ function Registration() {
 
   return (
     <div className="">
-      <form
-        onSubmit={handleForm}
-        className="bg-white p-10 rounded-lg shadow-lg min-w-full"
-      >
+      <form onSubmit={handleForm} className="bg-white p-10 rounded-lg shadow-lg min-w-full">
         <div className="flex justify-center pb-1">
           <img className="h-12 w-auto sm:h-12" src={Logo} alt="LogoVos" />
         </div>
-        <h1 className="text-center text-xl font-semibold text-gray-600 mb-2">
-          Registration Form
-        </h1>
+        <h1 className="text-center text-xl font-semibold text-gray-600 mb-2">Registration Form</h1>
 
         {success ? (
           <p className="mb-2 text-green-500  text-center">{success}</p>

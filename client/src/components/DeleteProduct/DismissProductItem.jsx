@@ -2,11 +2,7 @@ import React, { useMemo } from "react";
 import { useState } from "react";
 import { IoArrowUndoCircle } from "react-icons/io5";
 
-function DismissProductItem({
-  product,
-  handleReturnToArrayButton,
-  handleChangeProductQuantity,
-}) {
+function DismissProductItem({ product, handleReturnToArrayButton, handleChangeProductQuantity }) {
   const maxQuantity = useMemo(() => product.quantity, []);
   const [value, setValue] = useState(maxQuantity);
   const [error, setError] = useState("");
@@ -27,9 +23,7 @@ function DismissProductItem({
 
   return (
     <div className="flex flex-col justify-between  border-2 hover:border-dashed border-black rounded-xl text-lg font-myFont px-3 py-1 ">
-      <h1 className="overflow-auto border-b border-b-black mb-2 ">
-        {product.name}
-      </h1>
+      <h1 className="overflow-auto border-b border-b-black mb-2 ">{product.name}</h1>
       <div className="flex justify-around  ">
         <p>{product.add_date}</p>
         <p>{product.customerFullName}</p>
@@ -47,10 +41,7 @@ function DismissProductItem({
       </div>
       <div className="text-center text-orange-600 ">
         <button>
-          <IoArrowUndoCircle
-            className="h-7 w-7"
-            onClick={() => handleReturnToArrayButton(product)}
-          />
+          <IoArrowUndoCircle className="h-7 w-7" onClick={() => handleReturnToArrayButton(product)} />
         </button>
       </div>
     </div>
