@@ -26,16 +26,10 @@ export const AuthContextProvider = ({ children }) => {
         localStorage.removeItem("access_token");
         localStorage.removeItem("user");
       } else {
-        // Обработка других ошибок
         console.log("Произошла ошибка:", error.message);
       }
     }
   }, []);
-
-  //   const setUserFromToken = (token) => {
-  //     const decodedToken = jwt_decode(token)
-  //     setUser(decodedToken)
-  //   }
 
   const setToken = (token) => {
     setValidToken(token);

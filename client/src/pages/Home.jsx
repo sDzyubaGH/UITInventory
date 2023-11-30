@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import NewsItem from "../components/News/NewsItem";
-import NewsService from "../service/HomeService/NewsService.js";
 import Pagination from "../components/Pagination";
-
-const newsService = new NewsService();
+import NewsList from "../components/News/NewsList";
+import HomeLoader from "../components/News/UI/HomeLoader.jsx";
+import authAxios from "../service/axios.js";
 
 const Home = () => {
   const [news, setNews] = useState([]);
@@ -18,8 +17,8 @@ const Home = () => {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const latestNews = await newsService.getLatestNews();
-      setNews(latestNews);
+      const latestNews = await authAxios.get("/product/latestAction");
+      setNews(latestNews.data);
       setLoading(false);
     };
     fetchData();
@@ -31,22 +30,24 @@ const Home = () => {
 
   return (
     <div>
-      <div className="flex">
-        <div className="flex flex-col w-full  mb-7 items-center m-4 ml-3">
-          <h1 className="text-center text-2xl font-myFont mt-2">
-            Последние изменения
-          </h1>
-          {currentIndex.map((news, index) => (
-            <NewsItem news={news} key={index} />
-          ))}
-          <Pagination
-            newsPerPage={newsPerPage}
-            totalNews={news.length}
-            paginate={paginate}
-            currentPage={currentPage}
-          />
+      {!loading ? (
+        <div>
+          <h1 className="text-center text-2xl font-myFont mt-3">Последние изменения</h1>
+          <div className="flex flex-col items-center">
+            <NewsList currentIndex={currentIndex} />
+            <Pagination
+              newsPerPage={newsPerPage}
+              totalNews={news.length}
+              paginate={paginate}
+              currentPage={currentPage}
+            />
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="flex justify-center items-center h-screen ">
+          <HomeLoader />
+        </div>
+      )}
     </div>
   );
 };
