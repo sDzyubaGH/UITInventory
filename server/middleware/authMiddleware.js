@@ -1,6 +1,5 @@
 import jwt from "jsonwebtoken";
 import "dotenv/config";
-import express from "express";
 
 export default function (req, res, next) {
   if (req.method === "OPTIONS") {
@@ -8,7 +7,7 @@ export default function (req, res, next) {
   }
 
   try {
-    const token = req.headers.authorization.split(" ")[1];
+    const token = req.headers.authorization?.split(" ")[1];
     if (!token) {
       return res.status(401).json({ message: "Пользователь не авторизован" });
     }
@@ -18,6 +17,7 @@ export default function (req, res, next) {
     req.user = decoded;
     next();
   } catch (error) {
+    console.log(error);
     return res.status(403).json({ message: "Пользователь не авторизован" });
   }
 }

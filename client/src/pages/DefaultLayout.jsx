@@ -1,6 +1,7 @@
 import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import Header from "../components/Header";
 
 function DefaultLayout() {
   const { token } = useAuth();
@@ -8,8 +9,11 @@ function DefaultLayout() {
   if (!token) return <Navigate to="/login" />;
 
   return (
-    <div className="h-screen bg-[#0cce0cfb]">
-      <Outlet />
+    <div className="min-h-screen bg-slate-100 ">
+      <Header />
+      <div>
+        <Outlet />
+      </div>
     </div>
   );
 }
