@@ -344,11 +344,6 @@ class ProductController {
         user,
       });
 
-      const buf = doc.getZip().generate({
-        type: "nodebuffer",
-        compression: "DEFLATE",
-      });
-
       const blob = doc.getZip().generate({
         type: "nodebuffer",
         mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
