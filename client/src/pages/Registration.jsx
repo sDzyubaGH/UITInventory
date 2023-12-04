@@ -5,13 +5,10 @@ import authAxios from "../service/axios";
 import { useAuth } from "../contexts/AuthContext";
 
 function Registration() {
-  const positionList = {
-    admin: "Системный Администратор",
-    prog: "Главный специалист",
-  };
+  const positionList = ["Системный администратор", "Главный специалист", "Зам. начальника УИТ", "Начальник УИТ"];
   const navigate = useNavigate();
   const [formLoading, setFormLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState([]);
   const [login, setLogin] = useState("");
   const [password, setPwd] = useState("");
   const [surname, setSurname] = useState("");
@@ -40,7 +37,7 @@ function Registration() {
         clearInterval(iId);
       }, 1000);
     } catch (error) {
-      setError(error.response.data.message);
+      setError(error.response.data.errors);
     } finally {
       setFormLoading(true);
     }
@@ -55,6 +52,7 @@ function Registration() {
   };
 
   const handlePosition = (event) => {
+    console.log(event.target.value);
     setPosition(event.target.value);
   };
 
@@ -81,7 +79,11 @@ function Registration() {
         {success ? (
           <p className="mb-2 text-green-500  text-center">{success}</p>
         ) : (
-          <p className="mb-2 text-red-500 break-all text-center">{error}</p>
+          error.map((e, i) => (
+            <p key={i} className="mb-2 text-red-500 break-all text-center">
+              {e.msg}
+            </p>
+          ))
         )}
 
         <div className="flex flex-col space-y-3 w-80 ">
@@ -119,8 +121,9 @@ function Registration() {
                 value={position}
                 onChange={handlePosition}
               >
-                <option>{positionList.prog}</option>
-                <option>{positionList.admin}</option>
+                {positionList.map((pos, i) => (
+                  <option key={i}>{pos}</option>
+                ))}
               </select>
             </p>
           </div>

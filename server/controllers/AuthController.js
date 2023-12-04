@@ -10,7 +10,7 @@ class AuthController {
       const errors = validationResult(req);
 
       if (!errors.isEmpty()) {
-        return res.status(400).json({ message: "Ошибка при регистрации", errors });
+        return res.status(400).json({ message: "Ошибка при регистрации", errors: errors.array() });
       }
       const { login, password, firstName, surname, position, patronymic } = req.body;
       const candidate = await prisma.user.findFirst({ where: { login } });

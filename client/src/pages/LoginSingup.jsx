@@ -27,9 +27,7 @@ function LoginSingup() {
     } catch (error) {
       setError(error.response.data.message);
     } finally {
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 1000);
+      setIsLoading(false);
     }
   };
 
