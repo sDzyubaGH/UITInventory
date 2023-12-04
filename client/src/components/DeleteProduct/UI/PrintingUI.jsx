@@ -15,26 +15,24 @@ function PrintingUI({
   return (
     <form className="w-9/12 px-10 max-w-4xl  col-span-2 py-5 text-center gap-2 rounded-lg items-center border-2 border-indigo-500 shadow-lg shadow-indigo-400 bg-white min-w-min">
       <h1 className="text-center font-myFont text-2xl">Печать</h1>
-      <div className="flex flex-wrap justify-center mt-5">
-        <div className="w-1/2">
-          <input
-            type="text"
-            className="h-11 pl-2 mb-2 text-md font-myFont rounded-md border-2 border-black shadow-lg focus:outline-none focus:shadow-orange-500 hover:shadow-orange-500"
-            placeholder="Номер кабинета"
-            value={roomNumber}
-            onChange={handleRoomNumber}
-            required
-          />
-          <input
-            type="text"
-            className="h-11 pl-2 mb-2 text-md font-myFont rounded-md border-2 border-black shadow-lg focus:outline-none focus:shadow-orange-500 hover:shadow-orange-500"
-            onChange={handleCustomer}
-            value={customer}
-            placeholder="Сотрудник"
-          />
-        </div>
+      <div className="flex flex-wrap justify-center mt-5 gap-2 ">
+        <input
+          type="text"
+          className="h-11   pl-2 mb-2 text-md font-myFont rounded-md border-2 border-black shadow-lg focus:outline-none focus:shadow-orange-500 hover:shadow-orange-500"
+          placeholder="Номер кабинета"
+          value={roomNumber}
+          onChange={handleRoomNumber}
+          required
+        />
+        <input
+          type="text"
+          className="h-11  pl-2 mb-2 text-md font-myFont rounded-md border-2 border-black shadow-lg focus:outline-none focus:shadow-orange-500 hover:shadow-orange-500"
+          onChange={handleCustomer}
+          value={customer}
+          placeholder="Сотрудник"
+        />
 
-        <div className="w-1/2 px-2 ">
+        <div className="w-1/2 px-2">
           <Select
             isMulti
             options={options}
